@@ -1,0 +1,8 @@
+.formWrap{
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    padding: 30px;
+    margin: auto;
+    margin-top: 30px;
+    max-width: 40vw;
+    border-radius: 10px;
+}
