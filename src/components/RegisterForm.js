@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Button, Row, Col, Form, InputGroup } from "react-bootstrap";
 import Link from "next/link";
+import router from "next/router";
 import styles from "@/styles/form.module.css";
-import { LoadingSpinner } from "./LoadingSpinner";
+import LoadingSpinner  from "./LoadingSpinner";
+import { AuthContext } from "@/context/AuthContextProvider";
 
 const RegisterForm = (props) => {
+  const authContext = React.useContext(AuthContext);
   const [validated, setValidated] = useState(false);
   const [isInvalidEmail, setIsInvalidEmail] = useState(null);
   const [isInvalidPassword, setIsInvalidPassword] = useState(null);
@@ -12,12 +15,46 @@ const RegisterForm = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const passwordRef = useRef();
   const emailRef = useRef();
-  const handleSubmit = (event) => {
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const enteredPassword = passwordRef.current.value;
     const enteredEmail = emailRef.current.value;
-    console.log(enteredEmail);
-    console.log(enteredPassword);
+    const formData = {
+      email: enteredEmail,
+      password: enteredPassword,
+    };
+    let url;
+    if (props.postUrl === "SignUp") {
+      url = `${process.env.NEXT_PUBLIC_BASENAME}api/signup`;
+    } else {
+      url = `${process.env.NEXT_PUBLIC_BASENAME}api/login`;
+    }
+    try {
+      setIsLoading(true);
+      const response = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      setIsLoading(false);
+      if (response.status === 201) {
+        console.log(data);
+        authContext.handleLogin(data.token, data.id, data.email);
+        router.push("/upcomingsessions");
+      } else {
+        let errorMessage = "Invalid Credentials!";
+        if (data && data.error) {
+          errorMessage = data.error;
+        }
+        throw new Error(errorMessage);
+      }
+    } catch (error) {
+      setError(error.message);
+    }
   };
   let content = null;
   if (isLoading) {

@@ -10,7 +10,7 @@ const SignUp = () => {
       linked={"/login"}
       question={"Already have an account? "}
       oppo={"Login"}
-      postUrl={"Sign Up"}
+      postUrl={"SignUp"}
     />
     </>
   );
