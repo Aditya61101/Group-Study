@@ -1,17 +1,23 @@
 import React from "react";
 import RegisterForm from "@/components/RegisterForm";
-import Navbar from "@/components/Navbar";
+import router from "next/router";
+
 const SignUp = () => {
+  //making this page as a protected route
+  React.useEffect(() => {
+    localStorage.getItem("isLoggedIn")
+      ? router.push("/upcomingsessions")
+      : router.push("/signup");
+  }, []);
   return (
     <>
-    <Navbar/>
-    <RegisterForm
-      title={"Sign Up"}
-      linked={"/login"}
-      question={"Already have an account? "}
-      oppo={"Login"}
-      postUrl={"SignUp"}
-    />
+      <RegisterForm
+        title={"Sign Up"}
+        linked={"/login"}
+        question={"Already have an account? "}
+        oppo={"Login"}
+        postUrl={"SignUp"}
+      />
     </>
   );
 };

@@ -6,16 +6,11 @@ export const AuthContext = createContext();
 export const AuthContextProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   useEffect(() => {
-    const storedUserLoggedInfo = localStorage.getItem("isLoggedIn");
-    if (storedUserLoggedInfo === "1") {
+    if (localStorage.getItem("isLoggedIn")==="1") {
       setIsLoggedIn(true);
     }
   }, []);
-  const handleLogin = (token, uId, emailID) => {
-    localStorage.setItem("token", token);
-    localStorage.setItem("isLoggedIn", "1");
-    localStorage.setItem("userID", uId);
-    localStorage.setItem("email", emailID);
+  const handleLogin = () => {
     setIsLoggedIn(true);
   };
   const handleLogout = React.useCallback(() => {

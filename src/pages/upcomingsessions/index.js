@@ -1,10 +1,15 @@
 import React from "react";
-import Navbar from "@/components/Navbar";
+import router from "next/router";
 
 const upComingSessions = () => {
+  //making this page as a protected route
+  React.useEffect(() => {
+    localStorage.getItem("isLoggedIn")
+      ? router.push("/upcomingsessions")
+      : router.push("/login");
+  }, []);
   return (
     <>
-      <Navbar />
       <div>upComingSessions</div>
     </>
   );

@@ -1,11 +1,16 @@
 import React from "react";
-import Navbar from "@/components/Navbar";
 import { SessionForm } from "@/components/SessionForm";
+import router from "next/router";
 
 const createSession = () => {
+  //making this page as a protected route
+  React.useEffect(() => {
+    localStorage.getItem("isLoggedIn")
+      ? router.push("/createsession")
+      : router.push("/login");
+  }, []);
   return (
     <>
-      <Navbar />
       <SessionForm title="Create A Session" method="POST" />
     </>
   );

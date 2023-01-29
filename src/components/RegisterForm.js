@@ -3,7 +3,7 @@ import { Button, Row, Col, Form, InputGroup } from "react-bootstrap";
 import Link from "next/link";
 import router from "next/router";
 import styles from "@/styles/form.module.css";
-import LoadingSpinner  from "./LoadingSpinner";
+import LoadingSpinner from "./LoadingSpinner";
 import { AuthContext } from "@/context/AuthContextProvider";
 
 const RegisterForm = (props) => {
@@ -18,8 +18,21 @@ const RegisterForm = (props) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setError(null);
     const enteredPassword = passwordRef.current.value;
     const enteredEmail = emailRef.current.value;
+    if (enteredEmail.length === 0 || !enteredEmail.includes("@")) {
+      setIsInvalidEmail(true);
+      return;
+    } else {
+      setIsInvalidEmail(false);
+    }
+    if (enteredPassword.length < 6) {
+      setIsInvalidPassword(true);
+      return;
+    } else {
+      setIsInvalidPassword(false);
+    }
     const formData = {
       email: enteredEmail,
       password: enteredPassword,
@@ -40,12 +53,16 @@ const RegisterForm = (props) => {
         },
       });
       const data = await response.json();
-      setIsLoading(false);
       if (response.status === 201) {
         console.log(data);
-        authContext.handleLogin(data.token, data.id, data.email);
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("isLoggedIn", "1");
+        localStorage.setItem("email", data.email);
+        authContext.handleLogin();
         router.push("/upcomingsessions");
+        setIsLoading(false);
       } else {
+        setIsLoading(false);
         let errorMessage = "Invalid Credentials!";
         if (data && data.error) {
           errorMessage = data.error;
