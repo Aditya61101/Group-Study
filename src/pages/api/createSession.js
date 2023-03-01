@@ -1,16 +1,23 @@
 import User from "@/models/user";
 import UpcomingSessions from "@/models/upcomingSessions";
 import connectDB from "@/config/db";
+import { APIProtect } from "@/middleware/authMiddleWare";
 
 let success = false;
 const handler = async (req, res) => {
-  const user = await User.findById(req.user.id);
+  if (await APIProtect(req)===null||await APIProtect(req)===undefined) {
+    res.status(400).json({ success, error: "No token found!" });
+    return;
+  }
+  //token.sub provides user id
+  const token = await APIProtect(req);
+  const user = await User.findById(token.sub);
   if (!user) {
     res.status(400).json({ success, error: "User not found!" });
+    return;
   }
-  console.log(req.body);
-  const upComingSessions = await UpcomingSessions.insertMany({
-    user: user.id,
+  const upComingSessions = await UpcomingSessions.create({
+    user: user._id,
     title: req.body.title,
     subject: req.body.subject,
     startDate: req.body.startDate,
@@ -19,7 +26,7 @@ const handler = async (req, res) => {
     endTime: req.body.endTime,
     maxStudents: req.body.maxStudents,
   });
-  // console.log(upComingSessions);
+  console.log("line 30 create session api ", upComingSessions);
   if (upComingSessions) {
     success = true;
     res.status(201).json({ success, upComingSessions });

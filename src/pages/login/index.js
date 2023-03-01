@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import RegisterForm from "@/components/RegisterForm";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 const Login = () => {
   const router = useRouter();
+  const {data:session} = useSession();
   // making this page as a protected route
-  React.useEffect(() => {
-    localStorage.getItem("isLoggedIn")
-      ? router.push("/upcomingsessions")
+  useEffect(() => {
+    session?.user ? router.push("/upcomingsessions")
       : router.push("/login");
   }, []);
   return (

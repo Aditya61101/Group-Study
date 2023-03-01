@@ -4,10 +4,9 @@ import Link from "next/link";
 import router from "next/router";
 import styles from "@/styles/form.module.css";
 import LoadingSpinner from "./LoadingSpinner";
-import { AuthContext } from "@/context/AuthContextProvider";
+import { signIn } from "next-auth/react";
 
 const RegisterForm = (props) => {
-  const authContext = React.useContext(AuthContext);
   const [validated, setValidated] = useState(false);
   const [isInvalidEmail, setIsInvalidEmail] = useState(null);
   const [isInvalidPassword, setIsInvalidPassword] = useState(null);
@@ -16,53 +15,26 @@ const RegisterForm = (props) => {
   const passwordRef = useRef();
   const emailRef = useRef();
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setError(null);
-    const enteredPassword = passwordRef.current.value;
-    const enteredEmail = emailRef.current.value;
-    if (enteredEmail.length === 0 || !enteredEmail.includes("@")) {
-      setIsInvalidEmail(true);
-      return;
-    } else {
-      setIsInvalidEmail(false);
-    }
-    if (enteredPassword.length < 6) {
-      setIsInvalidPassword(true);
-      return;
-    } else {
-      setIsInvalidPassword(false);
-    }
-    const formData = {
-      email: enteredEmail,
-      password: enteredPassword,
-    };
-    let url;
-    if (props.postUrl === "SignUp") {
-      url = `${process.env.NEXT_PUBLIC_BASENAME}api/signup`;
-    } else {
-      url = `${process.env.NEXT_PUBLIC_BASENAME}api/login`;
-    }
+  const handleSignUp = async (email, password) => {
+    let url = `${process.env.NEXT_PUBLIC_BASENAME}api/signup`;
     try {
       setIsLoading(true);
-      const response = await fetch(url, {
+      const res = await fetch(url, {
         method: "POST",
-        body: JSON.stringify(formData),
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
       });
-      const data = await response.json();
-      if (response.status === 201) {
+      const data = await res.json();
+      setIsLoading(false);
+      if (res.status === 201) {
         console.log(data);
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("isLoggedIn", "1");
-        localStorage.setItem("email", data.email);
-        authContext.handleLogin();
-        router.push("/upcomingsessions");
-        setIsLoading(false);
+        router.push("/login");
       } else {
-        setIsLoading(false);
         let errorMessage = "Invalid Credentials!";
         if (data && data.error) {
           errorMessage = data.error;
@@ -71,6 +43,33 @@ const RegisterForm = (props) => {
       }
     } catch (error) {
       setError(error.message);
+    }
+  };
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setError(null);
+    const enteredPassword = passwordRef.current.value;
+    const enteredEmail = emailRef.current.value;
+    if (enteredEmail.length === 0 || !enteredEmail.includes("@")) {
+      setIsInvalidEmail(true);
+      return;
+    } else setIsInvalidEmail(false);
+
+    if (enteredPassword.length < 6) {
+      setIsInvalidPassword(true);
+      return;
+    } else setIsInvalidPassword(false);
+
+    if (props.postUrl === "SignUp") {
+      handleSignUp(enteredEmail, enteredPassword);
+    } else {
+      const res = await signIn("credentials", {
+        email: enteredEmail,
+        password: enteredPassword,
+        redirect: true,
+        callbackUrl: "/upcomingsessions",
+      });
+      console.log(res);
     }
   };
   let content = null;

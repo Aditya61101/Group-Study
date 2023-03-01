@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import RegisterForm from "@/components/RegisterForm";
 import router from "next/router";
+import { useSession } from "next-auth/react";
 
 const SignUp = () => {
+  const { data: session } = useSession();
   //making this page as a protected route
-  React.useEffect(() => {
-    localStorage.getItem("isLoggedIn")
+  useEffect(() => {
+    session?.user
       ? router.push("/upcomingsessions")
       : router.push("/signup");
   }, []);
+  
   return (
     <>
       <RegisterForm

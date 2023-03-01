@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import CryptoJS from "crypto-js";
 
 const genToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+  return jwt.sign({ id }, process.env.NEXTAUTH_SECRET, {
     expiresIn: "30d",
   });
 };
@@ -19,9 +19,10 @@ const handler = async (req, res) => {
     res.status(400).json({ error: "Please enter correct email address!" });
     return;
   }
-  const bytes = CryptoJS.AES.decrypt(user.password, process.env.JWT_SECRET);
+  const bytes = CryptoJS.AES.decrypt(user.password, process.env.NEXTAUTH_SECRET);
   const originalPassword = bytes.toString(CryptoJS.enc.Utf8);
   if (password == originalPassword) {
+    console.log("password matched!");
     res.status(201).json({
       success: true,
       id: user._id,
