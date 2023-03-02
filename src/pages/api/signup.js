@@ -6,13 +6,11 @@ const handler = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
     res.status(400).json({ error: "Please enter all fields!" });
-    console.log("Please enter all fields!");
     return;
   }
   const user = await User.findOne({ email });
   if (user) {
     res.status(400).json({ error: "User already exists!" });
-    console.log("User already exists!");
     return;
   }
   const hashedPassword = CryptoJS.AES.encrypt(password, process.env.NEXTAUTH_SECRET).toString();
