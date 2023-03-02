@@ -1,24 +1,39 @@
 import React, { createContext, useState } from "react";
 import router from "next/router";
+import { toast } from "react-toastify";
 
 export const StudySessionContext = createContext();
 
 export const StudySessionContextProvider = ({ children }) => {
-  const [errorRegister, setErrorRegister] = useState(null);
-  const [successRegister, setSuccessRegister] = useState(null);
-  const [registerSessionId, setRegisterSessionId] = useState(null);
-  const [errorDelete, setErrorDelete] = useState(null);
-  const [errorSubmit, setErrorSubmit] = useState(null);
-  const [success, setSuccess] = useState(false);
+  const [upSessions, setUpSessions] = useState([]);
 
+  const getSessions = async () => {
+    let url = `${process.env.NEXT_PUBLIC_BASENAME}api/sessions`;
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+      });
+      const data = await response.json();
+      if (response.status === 201) {
+        setUpSessions(data?.upComingSessions);
+      } else {
+        let errorMessage = "Cannot get upcoming sessions";
+        if (data && data.error) {
+          errorMessage = data.error;
+        }
+        throw new Error(errorMessage);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
   const sessionSubmission = async (formData, sendMethod, sessionid) => {
     try {
       let url;
       if (sendMethod === "POST") {
         url = `${process.env.NEXT_PUBLIC_BASENAME}api/createSession`;
       } else {
-        //have to check
-        url = `${process.env.NEXT_PUBLIC_BASENAME}api/upcoming_sessions/${sessionid}`;
+        url = `${process.env.NEXT_PUBLIC_BASENAME}api/sessions/${sessionid}`;
       }
       const response = await fetch(url, {
         method: sendMethod,
@@ -29,24 +44,27 @@ export const StudySessionContextProvider = ({ children }) => {
       });
       const data = await response.json();
       if (response.status === 201) {
-        console.log(data);
+        getSessions();
+        if (sendMethod === "POST") {
+          toast.success("Session created successfully!");
+        } else{
+          toast.success("Session updated successfully!");
+        }
         router.push("/upcomingsessions");
       } else {
         let errorMessage = "Cannot create a session!";
-        console.log(data);
         if (data && data.error) {
           errorMessage = data.error;
         }
         throw new Error(errorMessage);
       }
     } catch (error) {
-      setErrorSubmit(error.message);
+      toast.error(error.message);
     }
   };
-  //have to check
   const deleteSession = async (sessionid) => {
     try {
-      let url = `${process.env.NEXT_PUBLIC_BASENAME}api/upcoming_sessions/${sessionid}`;
+      let url = `${process.env.NEXT_PUBLIC_BASENAME}api/sessions/${sessionid}`;
       const response = await fetch(url, {
         method: "DELETE",
         headers: {
@@ -55,25 +73,22 @@ export const StudySessionContextProvider = ({ children }) => {
       });
       const data = await response.json();
       if (response.status === 201) {
-        console.log(data);
+        toast.success("Session deleted successfully!");
         getSessions();
-        router.push("/upcomingSession");
       } else {
-        let errorMessage = "Cannot create a session!";
-        console.log(data);
+        let errorMessage = "Cannot delete the session!";
         if (data && data.error) {
           errorMessage = data.error;
         }
         throw new Error(errorMessage);
       }
     } catch (error) {
-      setErrorDelete(error.message);
+      toast.error(error.message);
     }
   };
   const registerSession = async (sessionid) => {
     try {
-      //have to check
-      let url = `${process.env.NEXT_PUBLIC_BASENAME}api/userRegister/${sessionid}`;
+      let url = `${process.env.NEXT_PUBLIC_BASENAME}api/sessions/${sessionid}`;
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -82,34 +97,24 @@ export const StudySessionContextProvider = ({ children }) => {
       });
       const data = await response.json();
       if (response.status === 201) {
-        console.log(data);
-        setSuccessRegister(data.message);
-        setSuccess(true);
-        setRegisterSessionId(data.sessionId);
+        toast.success(data.message);
       } else {
         let errorMessage = "Not Registered";
-        console.log(data);
-        setSuccess(false);
-        setRegisterSessionId(data.sessionId);
         if (data && data.error) {
           errorMessage = data.error;
         }
         throw new Error(errorMessage);
       }
     } catch (error) {
-      setErrorRegister(error.message);
+      toast.error(error.message);
     }
   };
   const sessionsValue = {
-    errorDelete,
-    errorSubmit,
-    errorRegister,
-    successRegister,
-    success,
+    upSessions,
+    getSessions,
     sessionSubmission,
     deleteSession,
     registerSession,
-    registerSessionId,
   };
   return (
     <StudySessionContext.Provider value={sessionsValue}>

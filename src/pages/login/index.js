@@ -10,7 +10,7 @@ const Login = () => {
   useEffect(() => {
     session?.user ? router.push("/upcomingsessions")
       : router.push("/login");
-  }, []);
+  }, [session]);
   return (
     <RegisterForm
       title={"Login"}

@@ -10,7 +10,7 @@ const handler = async (req, res) => {
     return;
   }
   const user = await User.findOne({ email });
-  if (user?.length > 0) {
+  if (user) {
     res.status(400).json({ error: "User already exists!" });
     console.log("User already exists!");
     return;
@@ -24,7 +24,6 @@ const handler = async (req, res) => {
     success:true,
     id: createdUser._id,
     email: createdUser.email,
-    // token: genToken(createdUser._id),
   });
 };
 export default connectDB(handler);

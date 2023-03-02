@@ -10,7 +10,7 @@ const SignUp = () => {
     session?.user
       ? router.push("/upcomingsessions")
       : router.push("/signup");
-  }, []);
+  }, [session]);
   
   return (
     <>

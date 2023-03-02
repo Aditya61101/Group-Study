@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Button, Row, Col, Form, InputGroup } from "react-bootstrap";
 import Link from "next/link";
 import router from "next/router";
 import styles from "@/styles/form.module.css";
 import LoadingSpinner from "./LoadingSpinner";
 import { signIn } from "next-auth/react";
+import { toast } from "react-toastify";
 
 const RegisterForm = (props) => {
   const [validated, setValidated] = useState(false);
@@ -33,6 +34,7 @@ const RegisterForm = (props) => {
       setIsLoading(false);
       if (res.status === 201) {
         console.log(data);
+        toast.success("Sign up successful!");
         router.push("/login");
       } else {
         let errorMessage = "Invalid Credentials!";
@@ -42,8 +44,23 @@ const RegisterForm = (props) => {
         throw new Error(errorMessage);
       }
     } catch (error) {
-      setError(error.message);
+      toast.error(error.message);
+      router.push("/signup");
     }
+  };
+  const handleLogin = async (email, password) => {
+    await signIn("credentials", {
+      email: email,
+      password: password,
+      redirect: false,
+    }).then((res) => {
+      console.log(res);
+      if (res?.ok) {
+        toast.success("Login successful!");
+      } else {
+        toast.error("Login Failed!");
+      }
+    });
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -63,13 +80,7 @@ const RegisterForm = (props) => {
     if (props.postUrl === "SignUp") {
       handleSignUp(enteredEmail, enteredPassword);
     } else {
-      const res = await signIn("credentials", {
-        email: enteredEmail,
-        password: enteredPassword,
-        redirect: true,
-        callbackUrl: "/upcomingsessions",
-      });
-      console.log(res);
+      handleLogin(enteredEmail, enteredPassword);
     }
   };
   let content = null;

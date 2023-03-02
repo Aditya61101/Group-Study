@@ -3,38 +3,22 @@ import { Col, Row, Container, Modal, Button } from "react-bootstrap";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { UpcomingSessionItem } from "@/components/UpcomingSessionItem";
 import { SessionForm } from "@/components/SessionForm";
+import { StudySessionContext } from "@/context/StudySessionContextProvider";
 
 const upComingSessions = () => {
+  const sessionCtx = useContext(StudySessionContext);
   const [show, setShow] = useState(false);
   const [sesObj, setSesObj] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [upSessions, setUpSessions] = useState([]);
-  const [errorFetch, setErrorFetch] = useState(null);
-  const getSessions = async () => {
-    let url = `${process.env.NEXT_PUBLIC_BASENAME}api/getSessions`;
-    try {
-      const response = await fetch(url, {
-        method: "GET",
-      });
-      const data = await response.json();
-      if (response.status === 201) {
-        setUpSessions(data?.upComingSessions);
-      } else {
-        let errorMessage = "Cannot get upcoming sessions";
-        if (data && data.error) {
-          errorMessage = data.error;
-        }
-        throw new Error(errorMessage);
-      }
-    } catch (error) {
-      setErrorFetch(error.message);
-    }
-  };
   useEffect(() => {
     setIsLoading(true);
-    getSessions();
+    sessionCtx.getSessions();
     setIsLoading(false);
   }, []);
+  useEffect(() => {
+    setUpSessions(sessionCtx.upSessions);
+  },[sessionCtx.upSessions])
   const handleClose = () => {
     setShow(false);
   };
@@ -98,7 +82,6 @@ const upComingSessions = () => {
   if (isLoading) {
     content = <LoadingSpinner />;
   } else if (upSessions?.length === 0|| upSessions===undefined) {
-    console.log(upSessions);
     content = (
       <div style={{ margin: "auto", fontSize: "20px" }}>
         No, upcoming Study sessions!

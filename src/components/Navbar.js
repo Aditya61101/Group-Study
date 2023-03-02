@@ -2,10 +2,14 @@ import React from "react";
 import { Container, Nav, Navbar, NavLink } from "react-bootstrap";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
+import { toast } from "react-toastify";
 
 const Navigation = () => {
   const { data: session } = useSession();
-  // console.log("session", session);
+  const handleLogout = () => {
+    toast.success("Logged out successfully");
+    signOut({redirect:true, callbackUrl:"/"})
+  }
   return (
     <Navbar bg="primary" expand="lg" variant="dark">
       <Container>
@@ -33,7 +37,7 @@ const Navigation = () => {
                       .join(" ")
                   }
                   variant="link"
-                  onClick={() => {signOut({redirect:true, callbackUrl:"/"})}}
+                  onClick={handleLogout}
                 >
                   Logout
                 </NavLink>

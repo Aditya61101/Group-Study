@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+// import { toast } from "react-toastify";
 
 export const authOptions = {
   // Configure one or more authentication providers
@@ -13,8 +14,7 @@ export const authOptions = {
       async authorize(credentials, req) {
         const { email, password } = credentials;
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BASENAME}api/login`,
-          {
+          `${process.env.NEXT_PUBLIC_BASENAME}api/login`,{
             method: "POST",
             headers: {
               "content-type": "application/json",

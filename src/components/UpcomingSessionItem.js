@@ -1,6 +1,6 @@
 import { Delete, Edit } from "@mui/icons-material";
 import React, { useContext, useState, useEffect } from "react";
-import { Button } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import styles from "@/styles/card.module.css";
 import {StudySessionContext} from "@/context/StudySessionContextProvider";
 import { useSession } from "next-auth/react";
@@ -10,10 +10,8 @@ export const UpcomingSessionItem = (props) => {
   const { data: session } = useSession();
   const [disabled, setDisabled] = useState(true);
   const [show, setShow] = useState(true);
-  const [showError, setShowError] = useState("");
-  const [showSuccess, setShowSuccess] = useState("");
+  const [showModal, setShowModal] = useState(false);
   const currentUser = session.user.id;
-
   const handleEdit = () => {
     let sessionObj = {
       sessionId: props.sessionId,
@@ -40,36 +38,35 @@ export const UpcomingSessionItem = (props) => {
       setDisabled(false);
       setShow(false);
     }
-    //to show error message
-    // if (
-    //   props.sessionId === sessionsContext.registerSessionId &&
-    //   sessionsContext.success === false
-    // ) {
-    //   setShowError(sessionsContext.errorRegister);
-    // }
-    setTimeout(() => {
-      setShowError(null);
-    }, 2000);
-    //to show success message
-    // if (
-    //   props.sessionId === sessionsContext.registerSessionId &&
-    //   sessionsContext.success === true
-    // ) {
-    //   setShowSuccess(sessionsContext.successRegister);
-    // }
-    setTimeout(() => {
-      setShowSuccess(null);
-    }, 2000);
   }, [
     currentUser,
     props.createdById,
     props.sessionId,
-    // sessionsContext.registerSessionId,
-    // sessionsContext.errorRegister,
-    // sessionsContext.successRegister,
-    // sessionsContext.success,
   ]);
+  const handleShow = () => {
+    setShowModal(true);
+  }
+  const handleClose = () => {
+    setShowModal(false);
+  }
+  let modal = (
+    <Modal show={showModal} onHide={handleClose}>
+      <Modal.Header closeButton>
+          <Modal.Title>Delete the session</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to delete this session?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="danger" onClick={handleDelete}>
+            Delete
+          </Button>
+        </Modal.Footer>
+    </Modal>
+  )
   return (
+    <>
     <div className={styles.session_card}>
       <div
         style={{
@@ -82,7 +79,7 @@ export const UpcomingSessionItem = (props) => {
         {show && (
           <div>
             <Edit className="mx-2" onClick={handleEdit} />
-            <Delete onClick={handleDelete} />
+            <Delete onClick={handleShow} />
           </div>
         )}
       </div>
@@ -100,8 +97,8 @@ export const UpcomingSessionItem = (props) => {
           Register
         </Button>
       </div>
-      {showSuccess && <small style={{ color: "green" }}>{showSuccess}</small>}
-      {showError && <small style={{ color: "red" }}>{showError}</small>}
     </div>
+    {modal}
+    </>
   );
 };
