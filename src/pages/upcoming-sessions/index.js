@@ -49,7 +49,7 @@ const UpcomingSessions = () => {
   };
 
   let modal = (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={() => setShow(false)}>
       <Modal.Header closeButton />
       <Modal.Body>
         <SessionForm
