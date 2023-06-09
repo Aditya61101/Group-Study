@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext, useMemo, useCallback } from "react";
 import { Col, Row, Container, Modal, Button } from "react-bootstrap";
-import { LoadingSpinner } from "@/components/LoadingSpinner";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { UpcomingSessionItem } from "@/components/UpcomingSessionItem";
 import { SessionForm } from "@/components/SessionForm";
 import { StudySessionContext } from "@/context/StudySessionContextProvider";

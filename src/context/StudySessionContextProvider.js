@@ -43,7 +43,7 @@ export const StudySessionContextProvider = ({ children }) => {
         body: JSON.stringify(formData),
       });
       const data = await response.json();
-      if (response.status === 201) {
+      if (response.ok) {
         getSessions();
         if (sendMethod === "POST") {
           toast.success("Session created successfully!");
@@ -72,7 +72,7 @@ export const StudySessionContextProvider = ({ children }) => {
         },
       });
       const data = await response.json();
-      if (response.status === 201) {
+      if (response.ok) {
         toast.success("Session deleted successfully!");
         getSessions();
       } else {
@@ -96,7 +96,7 @@ export const StudySessionContextProvider = ({ children }) => {
         },
       });
       const data = await response.json();
-      if (response.status === 201) {
+      if (response.ok) {
         toast.success(data.message);
       } else {
         let errorMessage = "Not Registered";
