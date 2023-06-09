@@ -8,8 +8,8 @@ const Navigation = () => {
   const { data: session } = useSession();
   const handleLogout = () => {
     toast.success("Logged out successfully");
-    signOut({redirect:true, callbackUrl:"/"})
-  }
+    signOut();
+  };
   return (
     <Navbar bg="primary" expand="lg" variant="dark">
       <Container>
@@ -21,10 +21,10 @@ const Navigation = () => {
           <Nav className="ms-auto">
             {session?.user ? (
               <>
-                <Link className="nav-link" href="/upcomingsessions">
+                <Link className="nav-link" href="/upcoming-sessions">
                   Upcoming Sessions
                 </Link>
-                <Link className="nav-link" href="/createsession">
+                <Link className="nav-link" href="/create-session">
                   Create a Session
                 </Link>
                 <Link className="nav-link" href="/">

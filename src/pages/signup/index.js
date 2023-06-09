@@ -1,27 +1,27 @@
 import React, { useEffect } from "react";
 import RegisterForm from "@/components/RegisterForm";
-import router from "next/router";
+import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const SignUp = () => {
-  const { data: session } = useSession();
-  //making this page as a protected route
+  const session = useSession();
+  const router = useRouter();
   useEffect(() => {
-    session?.user
-      ? router.push("/upcomingsessions")
-      : router.push("/signup");
+    if (session?.status === "authenticated")
+      router.push("/upcoming-sessions");
   }, [session]);
-  
+  if (session.status === "loading") {
+    return <LoadingSpinner />;
+  }
   return (
-    <>
-      <RegisterForm
-        title={"Sign Up"}
-        linked={"/login"}
-        question={"Already have an account? "}
-        oppo={"Login"}
-        postUrl={"SignUp"}
-      />
-    </>
+    <RegisterForm
+      title={"Sign Up"}
+      linked={"/login"}
+      question={"Already have an account? "}
+      oppo={"Login"}
+      postUrl={"SignUp"}
+    />
   );
 };
 export default SignUp;

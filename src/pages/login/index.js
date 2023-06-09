@@ -2,15 +2,17 @@ import React, { useEffect } from "react";
 import RegisterForm from "@/components/RegisterForm";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const Login = () => {
   const router = useRouter();
-  const {data:session} = useSession();
-  // making this page as a protected route
+  const session = useSession();
   useEffect(() => {
-    session?.user ? router.push("/upcomingsessions")
-      : router.push("/login");
+    if (session?.status === "authenticated") router.push("/upcoming-sessions");
   }, [session]);
+  if (session?.status === "loading") {
+    return <LoadingSpinner />;
+  }
   return (
     <RegisterForm
       title={"Login"}

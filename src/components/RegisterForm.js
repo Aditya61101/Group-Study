@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { Button, Row, Col, Form, InputGroup } from "react-bootstrap";
 import Link from "next/link";
-import router from "next/router";
+import { useRouter } from "next/router";
 import styles from "@/styles/form.module.css";
 import LoadingSpinner from "./LoadingSpinner";
 import { signIn } from "next-auth/react";
@@ -15,7 +15,7 @@ const RegisterForm = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const passwordRef = useRef();
   const emailRef = useRef();
-
+  const router = useRouter();
   const handleSignUp = async (email, password) => {
     let url = `${process.env.NEXT_PUBLIC_BASENAME}api/signup`;
     try {
@@ -31,8 +31,7 @@ const RegisterForm = (props) => {
         }),
       });
       const data = await res.json();
-      setIsLoading(false);
-      if (res.status === 201) {
+      if (res.ok) {
         console.log(data);
         toast.success("Sign up successful!");
         router.push("/login");
@@ -46,21 +45,30 @@ const RegisterForm = (props) => {
     } catch (error) {
       toast.error(error.message);
       router.push("/signup");
+    } finally {
+      setIsLoading(false);
     }
   };
   const handleLogin = async (email, password) => {
-    await signIn("credentials", {
-      email: email,
-      password: password,
-      redirect: false,
-    }).then((res) => {
+    setIsLoading(true);
+    try {
+      const res = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
       console.log(res);
-      if (res?.ok) {
-        toast.success("Login successful!");
-      } else {
-        toast.error("Login Failed!");
+      if (res.error) {
+        throw new Error(res.error);
+      } else if (res.ok) {
+        toast.success("Login successful! 🎉");
+        router.push("/upcoming-sessions");
       }
-    });
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -128,6 +136,7 @@ const RegisterForm = (props) => {
                 ref={passwordRef}
                 isInvalid={isInvalidPassword}
                 required
+                autoComplete="on"
               />
               <Form.Control.Feedback type="invalid">
                 Please should be of at least 6 characters

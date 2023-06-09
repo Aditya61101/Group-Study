@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Col, Row, Container, Modal, Button } from "react-bootstrap";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { UpcomingSessionItem } from "@/components/UpcomingSessionItem";

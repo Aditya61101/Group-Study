@@ -3,18 +3,18 @@ import router from "next/router";
 import { toast } from "react-toastify";
 
 export const StudySessionContext = createContext();
-
 export const StudySessionContextProvider = ({ children }) => {
   const [upSessions, setUpSessions] = useState([]);
 
   const getSessions = async () => {
+    
     let url = `${process.env.NEXT_PUBLIC_BASENAME}api/sessions`;
     try {
       const response = await fetch(url, {
         method: "GET",
       });
       const data = await response.json();
-      if (response.status === 201) {
+      if (response.status === 200) {
         setUpSessions(data?.upComingSessions);
       } else {
         let errorMessage = "Cannot get upcoming sessions";
@@ -47,10 +47,10 @@ export const StudySessionContextProvider = ({ children }) => {
         getSessions();
         if (sendMethod === "POST") {
           toast.success("Session created successfully!");
-        } else{
+        } else {
           toast.success("Session updated successfully!");
         }
-        router.push("/upcomingsessions");
+        router.push("/upcoming-sessions");
       } else {
         let errorMessage = "Cannot create a session!";
         if (data && data.error) {

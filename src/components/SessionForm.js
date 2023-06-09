@@ -62,7 +62,6 @@ export const SessionForm = (props) => {
     } else {
       setIsIETime(false);
     }
-    console.log(startTime);
     if (startDate === endDate && startTime > endTime) {
       setIsIETime(true);
       return;

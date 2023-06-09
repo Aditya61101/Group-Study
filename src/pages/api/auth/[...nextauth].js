@@ -1,57 +1,50 @@
 import NextAuth from "next-auth";
+import User from "@/models/user";
 import CredentialsProvider from "next-auth/providers/credentials";
-// import { toast } from "react-toastify";
+import bcrypt from "bcrypt";
+import connectDB from "@/config/db";
 
 export const authOptions = {
-  // Configure one or more authentication providers
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: "credentials",
       credentials: {
-        username: { label: "Email", type: "text", placeholder: "enter email" },
+        email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials, req) {
-        const { email, password } = credentials;
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BASENAME}api/login`,{
-            method: "POST",
-            headers: {
-              "content-type": "application/json",
-            },
-            body: JSON.stringify({
-              email,
-              password,
-            }),
+      async authorize(credentials) {
+        try {
+          if (!credentials.email || !credentials.password) {
+            throw new Error("Please enter all the fields");
           }
-        );
-        const user = await res.json();
-        if (res.ok && user) {
+          const user = await User.findOne({ email: credentials.email });
+          if (!user) {
+            console.log("Invalid Credentials at 21");
+            throw new Error("Invalid Credentials");
+          }
+          const isValid = await bcrypt.compare(
+            credentials.password,
+            user.password
+          );
+          if (!isValid) {
+            console.log("Invalid Credentials at 29");
+            throw new Error("Invalid Credentials");
+          }
           return user;
-        } else return null;
+        } catch (error) {
+          throw new Error(error.message);
+        }
       },
     }),
   ],
-  //for storing userID in session object
-  callbacks: {
-    session: async ({ session, token }) => {
-      if (session?.user) {
-        session.user.id = token.sub;
-      }
-      return session;
-    },
-    jwt: async ({ user, token }) => {
-      if (user) {
-        token.sub = user.id;
-      }
-      return token;
-    },
-  },
+  debug: process.env.NODE_ENV === "development",
   session: {
     strategy: "jwt",
   },
+  secret: process.env.NEXTAUTH_SECRET,
+  database: process.env.MONGO_URI,
   pages: {
     signIn: "/login",
   },
 };
-export default NextAuth(authOptions);
+export default connectDB(NextAuth(authOptions));
