@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext, useMemo } from "react";
+import { useEffect, useState, useContext, useMemo, useCallback } from "react";
 import { Col, Row, Container, Modal, Button } from "react-bootstrap";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import { UpcomingSessionItem } from "@/components/UpcomingSessionItem";
@@ -23,13 +23,10 @@ const UpcomingSessions = () => {
   // useEffect(() => {
   //   setUpSessions(sessionCtx.upSessions);
   // }, [sessionCtx.upSessions]);
-  const updateSessions = useMemo(
-    (sessionObj) => {
-      setSesObj(sessionObj);
-      setShow(true);
-    },
-    [sessionObj]
-  );
+  const updateSessions = useCallback((sessionObj) => {
+    setSesObj(sessionObj);
+    setShow(true);
+  }, []);
   const handleSort = () => {
     const sortedUpSessions = [...upSessions];
     const propComp = (sD, eD, sT, eT) => (a, b) => {
