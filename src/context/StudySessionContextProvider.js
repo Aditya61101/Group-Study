@@ -115,6 +115,7 @@ export const StudySessionContextProvider = ({ children }) => {
     sessionSubmission,
     deleteSession,
     registerSession,
+    setUpSessions,
   };
   return (
     <StudySessionContext.Provider value={sessionsValue}>
