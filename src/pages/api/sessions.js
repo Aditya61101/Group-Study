@@ -11,9 +11,8 @@ const handler = async (_, res) => {
         .status(200)
         .json({ success: false, error: "No upcoming sessions found!" });
     }
-  } catch {
+  } catch(err) {
      res.status(500).json({ success: false, error: "Internal Server Error" });
   }
-  
 };
 export default connectDB(handler);
