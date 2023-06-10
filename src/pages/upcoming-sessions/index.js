@@ -10,7 +10,6 @@ const UpcomingSessions = () => {
   const [show, setShow] = useState(false);
   const [sesObj, setSesObj] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  // const [upSessions, setUpSessions] = useState([]);
   const upSessions = useMemo(
     () => sessionCtx.upSessions,
     [sessionCtx.upSessions]
@@ -20,9 +19,6 @@ const UpcomingSessions = () => {
     sessionCtx.getSessions();
     setIsLoading(false);
   }, []);
-  // useEffect(() => {
-  //   setUpSessions(sessionCtx.upSessions);
-  // }, [sessionCtx.upSessions]);
   const updateSessions = useCallback((sessionObj) => {
     setSesObj(sessionObj);
     setShow(true);
