@@ -19,7 +19,6 @@ export const authOptions = {
           }
           const user = await User.findOne({ email: credentials.email });
           if (!user) {
-            console.log("Invalid Credentials at 21");
             throw new Error("Invalid Credentials");
           }
           const isValid = await bcrypt.compare(
@@ -27,7 +26,6 @@ export const authOptions = {
             user.password
           );
           if (!isValid) {
-            console.log("Invalid Credentials at 29");
             throw new Error("Invalid Credentials");
           }
           return user;
@@ -40,6 +38,18 @@ export const authOptions = {
   debug: process.env.NODE_ENV === "development",
   session: {
     strategy: "jwt",
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user._id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      session.user.id = token.id;
+      return session;
+    },
   },
   secret: process.env.NEXTAUTH_SECRET,
   database: process.env.MONGO_URI,
