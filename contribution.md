@@ -1,6 +1,6 @@
 # How to contribute??
 
-Welcome to Group Study! I appreciate your interest in contributing to this full stack Next.js project.
+Welcome to Group Study! I appreciate your interest in contributing to this full-stack Next.js project.
 
 Before you start contributing, please take a moment to read the following guidelines to ensure a smooth and effective contribution process.
 
@@ -22,14 +22,14 @@ Before you start contributing, please take a moment to read the following guidel
 - Add a reference to the original repository: `git remote add upstream https://github.com/Aditya61101/Group-Study.git`
 - Check the remotes for this repository: `git remote -v`
 - Always take a pull from the upstream repository to your main branch to keep it updated as per the main project repository: `git pull upstream main`
-- Create a new branch(prefer a branch name that relates to your assigned issue): `git checkout -b <YOUR_BRANCH_NAME>`
+- Create a new branch (prefer a branch name that relates to your assigned issue): `git checkout -b <YOUR_BRANCH_NAME>`
 - Install project dependencies: `npm install`
 
 ## How Can I Contribute?
 
 ### Reporting Issues
 
-If you are reporting an issue, please ensure that it's not already present in [Issues](https://github.com/Aditya61101/Group-Study/issues). Otherwise, you can [open a new issue](https://github.com/Aditya61101/Group-Study/issues/new) and provide a detailed information about the issue.
+If you are reporting an issue, please ensure that it's not already present in [Issues](https://github.com/Aditya61101/Group-Study/issues). Otherwise, you can [open a new issue](https://github.com/Aditya61101/Group-Study/issues/new) and provide detailed information about the issue.
 
 ### Feature Requests
 
@@ -46,6 +46,6 @@ Feel at liberty to choose any open matter from our [issue tracker](https://githu
 3. Commit the changes: `git commit -m "relevant message"`
 4. Push the committed changes in your feature branch to your remote repository: `git push -u origin <your_branch_name>`
 5. To create a pull request, click on compare and pull requests.
-6. Be willing to make any requested changes or improvements.
-
+6. Also, upload a video snippet or at least a screenshot of the thing that you have done.
+7. Be willing to make any requested changes or improvements.
 #### Well done! 🎉 You've successfully submitted a pull request to the Group-Study. Please be patient while your submission undergoes review and awaits merging by a maintainer.
