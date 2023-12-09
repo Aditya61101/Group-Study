@@ -27,7 +27,7 @@ const Navigation = () => {
                 <Link className="nav-link" href="/create-session">
                   Create a Session
                 </Link>
-                <Link className="nav-link" href="/">
+                <Link className="nav-link" href="/profile">
                   {session?.user?.email}
                 </Link>
                 <NavLink
