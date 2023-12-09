@@ -4,6 +4,7 @@ import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 
+
 const Navigation = () => {
   const { data: session } = useSession();
   const handleLogout = () => {
@@ -28,12 +29,9 @@ const Navigation = () => {
                 <Link className="nav-link" href="/past-sessions">
                   Past Sessions
                 </Link>
-        
-                <NavDropdown title="Create a Session" id="basic-nav-dropdown">
-                 <NavDropdown.Item href="/create-session">Create Sessions</NavDropdown.Item>
-                 <NavDropdown.Item href="#">Coding Sessions</NavDropdown.Item>
-                 <NavDropdown.Item href="#">Others</NavDropdown.Item>
-                </NavDropdown>
+                <Link className="nav-link" href="/create-session">
+                  Create Session
+                </Link>
                 <Link className="nav-link" href="/">
                   {session?.user?.email}
                 </Link>
