@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 
 const handler = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, name, age, address, college } = req.body;
     if (!email || !password) {
       res.status(400).json({ error: "Please enter all fields!" });
       return;
@@ -18,6 +18,10 @@ const handler = async (req, res) => {
     const createdUser = await User.create({
       email,
       password: hashedPassword,
+      name,
+      age,
+      college,
+      address
     });
     res.status(201).json({
       success: true,

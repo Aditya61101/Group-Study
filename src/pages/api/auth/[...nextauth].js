@@ -9,10 +9,12 @@ export const authOptions = {
     CredentialsProvider({
       name: "credentials",
       credentials: {
+
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+
         try {
           if (!credentials.email || !credentials.password) {
             throw new Error("Please enter all the fields");
@@ -43,11 +45,24 @@ export const authOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user._id;
+        token.name = user.name;
+        token.college = user.college;
+        token.age = user.age;
+        token.address = user.address;
+        token.createdAt = user.createdAt;
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token, user }) {
+
+      // Session Data
       session.user.id = token.id;
+      session.user.name = token.name;
+      session.user.age = token.age;
+      session.user.college = token.college;
+      session.user.address = token.address;
+      session.user.createdAt = token.createdAt;
+
       return session;
     },
   },

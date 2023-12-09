@@ -14,7 +14,6 @@ export default function profile() {
     const { status, data: userData } = useSession();
 
     useEffect(() => {
-        console.log(userData)
         if (status === 'loading') {
             return;
         }
@@ -22,22 +21,19 @@ export default function profile() {
         if (!userData || !userData.user) {
             router.push('/login');
         }
+
+        console.log(userData)
     }, [status, userData, router]);
 
     if (session?.status === "loading") {
         return <LoadingSpinner />;
     }
 
-    const user = {
-        Name: 'Pooranjoy Bhattacharya',
-        dateCreated: 'December 9, 2023',
-        sessionsCreated: 5,
-        numberOfSessions: 10,
-        dateOfBirth: 'January 31, 2001',
-        college: 'Manipal Institute of Technology',
-        age: 33,
-        address: '123 St, City, India',
+    const formatDate = (dateString) => {
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        return new Date(dateString).toLocaleDateString('en-US', options);
     };
+
     return (
         <>
             <div className="profile-container d-flex items-center mt-5 justify-content-around">
@@ -49,34 +45,25 @@ export default function profile() {
                         className="rounded-circle mb-3"
                         width="150"
                     />
-                    <h3 className="profile-title">{user.Name}</h3>
-                    <span>User since 2023</span>
+                    <h3 className="profile-title">{userData?.user?.name}</h3>
+                    <span>{userData?.user?.email}</span>
                 </div>
-                <div style={{margin: '0 0 '}} className={styles.formWrap}>
-
+                <div style={{ margin: '0 0 ' }} className={styles.formWrap}>
+                
                     <p className="profile-text">
                         <strong>Registered Email:</strong> {userData?.user?.email}
                     </p>
                     <p className="profile-text">
-                        <strong>Date Created:</strong> {user.dateCreated}
+                        <strong>College:</strong> {userData?.user?.college}
                     </p>
                     <p className="profile-text">
-                        <strong>Sessions Created:</strong> {user.sessionsCreated}
+                        <strong>Age:</strong> {userData?.user?.age}
                     </p>
                     <p className="profile-text">
-                        <strong>Number of Attended:</strong> {user.numberOfSessions}
+                        <strong>Address:</strong> {userData?.user?.address}
                     </p>
                     <p className="profile-text">
-                        <strong>Date of Birth:</strong> {user.dateOfBirth}
-                    </p>
-                    <p className="profile-text">
-                        <strong>College:</strong> {user.college}
-                    </p>
-                    <p className="profile-text">
-                        <strong>Age:</strong> {user.age}
-                    </p>
-                    <p className="profile-text">
-                        <strong>Address:</strong> {user.address}
+                        <strong>Member Since:</strong> {formatDate(userData?.user?.createdAt)}
                     </p>
                 </div>
             </div>
