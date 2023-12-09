@@ -166,11 +166,11 @@ export const UpcomingSessionItem = (props) => {
               <div className="d-grid">
                 {
                   isRegistered === false &&
-                  <Button variant="contained" onClick={handleRegister} disabled={disabled} startIcon={<PersonAddRoundedIcon />} color="warning">
+                  <Button variant="contained" onClick={handleRegister} disabled={disabled} startIcon={<PersonAddRoundedIcon />}>
                     Register
                   </Button>
                   ||
-                  <Button variant="contained" onClick={''} disabled={disabled} startIcon={<PersonAddRoundedIcon />}>
+                  <Button variant="contained" onClick={''} disabled={disabled} startIcon={<PersonAddRoundedIcon />} color="warning">
                     Unregister
                   </Button>
                 }
