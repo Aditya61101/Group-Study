@@ -10,6 +10,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import PersonAddRoundedIcon from '@mui/icons-material/PersonAddRounded';
 import { Chip, Button } from "@mui/material";
+import { toast } from "react-toastify";
 
 export const UpcomingSessionItem = (props) => {
   const sessionsContext = useContext(StudySessionContext);
@@ -17,6 +18,8 @@ export const UpcomingSessionItem = (props) => {
   const [disabled, setDisabled] = useState(true);
   const [show, setShow] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [regStuds, setRegStuds] = useState(0)
+  const [isRegistered, setIsRegistered] = useState(false)
   const currentUser = session?.user?.id;
 
   const formatDate = (queryDate) => {
@@ -25,6 +28,23 @@ export const UpcomingSessionItem = (props) => {
 
   const formatTime = (queryTime) => {
     return new Date(`2000-01-01T${queryTime}`).toLocaleTimeString('en-us', { timeStyle: "short" })
+  }
+
+  const handleRegStuds = async () => {
+    let url = `${process.env.NEXT_PUBLIC_BASENAME}api/sessions/${props.sessionId}`;
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+    setRegStuds(data.regStudCount)
+    if (data.regStudIds.includes(currentUser)) {
+      setIsRegistered(true)
+    } else {
+      setIsRegistered(false)
+    }
   }
 
   const handleEdit = () => {
@@ -45,10 +65,33 @@ export const UpcomingSessionItem = (props) => {
     sessionsContext.deleteSession(props.sessionId);
     console.log("session deleted");
   };
-  const handleRegister = () => {
-    sessionsContext.registerSession(props.sessionId);
+  const handleRegister = async () => {
+    // sessionsContext.registerSession(props.sessionId); Commented this out for changing number of registered students without refreshing
+    try {
+      let url = `${process.env.NEXT_PUBLIC_BASENAME}api/sessions/${props.sessionId}`;
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      if (response.ok) {
+        toast.success(data.message);
+        setRegStuds((regStuds) => regStuds + 1)
+      } else {
+        let errorMessage = "Not Registered";
+        if (data && data.error) {
+          errorMessage = data.error;
+        }
+        throw new Error(errorMessage);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
   useEffect(() => {
+    handleRegStuds()
     if (currentUser !== props.createdById) {
       setDisabled(false);
       setShow(false);
@@ -87,8 +130,7 @@ export const UpcomingSessionItem = (props) => {
           <Card.Title className="fs-2 fw-bold">
             <div className="d-flex justify-content-between align-items-center">
               {props.title}
-              {/* Number of students currently registered to a session is hardcoded rn */}
-              <Chip variant="outlined" color="default" icon={<AccountCircleRoundedIcon />} label={`${props.max_students}`} />
+              <Chip variant="outlined" color="default" icon={<AccountCircleRoundedIcon />} label={`${regStuds} / ${props.max_students}`} />
             </div>
 
           </Card.Title>
@@ -122,9 +164,16 @@ export const UpcomingSessionItem = (props) => {
             </div>
           ) || (
               <div className="d-grid">
-                <Button variant="contained" onClick={handleRegister} disabled={disabled} startIcon={<PersonAddRoundedIcon />}>
-                  Register
-                </Button>
+                {
+                  isRegistered === false &&
+                  <Button variant="contained" onClick={handleRegister} disabled={disabled} startIcon={<PersonAddRoundedIcon />} color="warning">
+                    Register
+                  </Button>
+                  ||
+                  <Button variant="contained" onClick={''} disabled={disabled} startIcon={<PersonAddRoundedIcon />}>
+                    Unregister
+                  </Button>
+                }
               </div>
             )}
         </Card.Body>
