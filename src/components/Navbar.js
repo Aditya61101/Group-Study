@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Nav, Navbar, NavLink } from "react-bootstrap";
+import { Container, Nav, Navbar, NavLink ,NavDropdown} from "react-bootstrap";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { toast } from "react-toastify";
@@ -11,11 +11,12 @@ const Navigation = () => {
     signOut();
   };
   return (
-    <Navbar bg="primary" expand="lg" variant="dark">
+    <Navbar bg="primary" expand="xl" variant="dark">
       <Container>
         <Link className="navbar-brand" href="/">
           Study Planner Inc.
         </Link>
+
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
@@ -24,9 +25,15 @@ const Navigation = () => {
                 <Link className="nav-link" href="/upcoming-sessions">
                   Upcoming Sessions
                 </Link>
-                <Link className="nav-link" href="/create-session">
-                  Create a Session
+                <Link className="nav-link" href="/past-sessions">
+                  Past Sessions
                 </Link>
+        
+                <NavDropdown title="Create a Session" id="basic-nav-dropdown">
+                 <NavDropdown.Item href="/create-session">Create Sessions</NavDropdown.Item>
+                 <NavDropdown.Item href="#">Coding Sessions</NavDropdown.Item>
+                 <NavDropdown.Item href="#">Others</NavDropdown.Item>
+                </NavDropdown>
                 <Link className="nav-link" href="/">
                   {session?.user?.email}
                 </Link>
@@ -44,16 +51,15 @@ const Navigation = () => {
               </>
             ) : (
               <>
-                <Link className="nav-link" href="/login">
-                  Login
-                </Link>
-                <Link className="nav-link" href="/signup">
-                  SignUp
-                </Link>
+                <NavDropdown title="Login" id="basic-nav-dropdown">
+                 <NavDropdown.Item href="/signup">SignUp</NavDropdown.Item>
+                 <NavDropdown.Item href="/login">Login</NavDropdown.Item>
+                </NavDropdown>
               </>
             )}
           </Nav>
         </Navbar.Collapse>
+        
       </Container>
     </Navbar>
   );
