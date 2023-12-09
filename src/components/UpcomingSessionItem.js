@@ -78,7 +78,12 @@ export const UpcomingSessionItem = (props) => {
       const data = await response.json();
       if (response.ok) {
         toast.success(data.message);
-        setRegStuds((regStuds) => regStuds + 1)
+        if (data.action === "register") {
+          setRegStuds((regStuds) => regStuds + 1)
+        } else if (data.action === "unregister") {
+          setRegStuds((regStuds) => regStuds - 1)
+        }
+        setIsRegistered(!isRegistered)
       } else {
         let errorMessage = "Not Registered";
         if (data && data.error) {
@@ -170,7 +175,7 @@ export const UpcomingSessionItem = (props) => {
                     Register
                   </Button>
                   ||
-                  <Button variant="contained" onClick={''} disabled={disabled} startIcon={<PersonAddRoundedIcon />} color="warning">
+                  <Button variant="contained" onClick={handleRegister} disabled={disabled} startIcon={<PersonAddRoundedIcon />} color="warning">
                     Unregister
                   </Button>
                 }

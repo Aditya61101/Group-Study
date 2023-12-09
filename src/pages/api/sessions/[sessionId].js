@@ -72,11 +72,25 @@ const handler = async (req, res) => {
         return;
       }
       if (userRegistered) {
-        res.status(409).json({
-          success: false,
-          error: "User has already registered!",
-          sessionId: req.query.sessionId,
+        const unRegSession = await RegisteredSession.deleteMany({
+          user: user._id,
+          session: req.query.sessionId,
         });
+        if (unRegSession) {
+          res.status(201).json({
+            success: true,
+            action: "unregister",
+            message: "User unregistered successfully!",
+            sessionId: req.query.sessionId,
+          });
+        } else {
+          res.status(400).json({
+            success: false,
+            error: "Could not unregister. Please try again!",
+            sessionId: req.query.sessionId,
+          });
+        }
+        return
       } else if (session.maxStudents <= countSession) {
         res.status(409).json({
           success: false,
@@ -91,6 +105,7 @@ const handler = async (req, res) => {
         if (regSession) {
           res.status(201).json({
             success: true,
+            action: "register",
             message: "User Registered successfully!",
             sessionId: req.query.sessionId,
           });
