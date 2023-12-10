@@ -1,13 +1,23 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useContext, useState, useMemo, useCallback } from 'react'
 
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 
 import LoadingSpinner from "@/components/LoadingSpinner";
-
-import styles from "@/styles/form.module.css";
+import { UpcomingSessionItem } from '@/components/UpcomingSessionItem';
+import { StudySessionContext } from "@/context/StudySessionContextProvider";
 
 export default function profile() {
+
+    const [sessions, setSessions] = useState([])
+    const sessionCtx = useContext(StudySessionContext);
+
+    useMemo(
+        () => {
+            setSessions(sessionCtx.upSessions)
+        },
+        [sessionCtx.upSessions]
+    );
 
     const router = useRouter();
     const session = useSession();
@@ -15,6 +25,7 @@ export default function profile() {
 
     useEffect(() => {
         if (status === 'loading') {
+            sessionCtx.getSessions();
             return;
         }
 
@@ -22,7 +33,6 @@ export default function profile() {
             router.push('/login');
         }
 
-        console.log(userData)
     }, [status, userData, router]);
 
     if (session?.status === "loading") {
@@ -36,8 +46,8 @@ export default function profile() {
 
     return (
         <>
-            <div className="profile-container d-flex items-center mt-5 justify-content-around">
-                <div className='d-flex align-items-center justify-content-center flex-column'>
+            <div className=" d-flex items-center mt-5 justify-content-around flex-wrap md:flex-col">
+                <div className='d-flex align-items-center justify-content-center flex-column md:mb-5'>
 
                     <img
                         src="https://cdn2.iconfinder.com/data/icons/people-flat-design/64/Face-Profile-User-Man-Boy-Person-Avatar-512.png"
@@ -48,8 +58,8 @@ export default function profile() {
                     <h3 className="profile-title">{userData?.user?.name}</h3>
                     <span>{userData?.user?.email}</span>
                 </div>
-                <div style={{ margin: '0 0 ' }} className={styles.formWrap}>
-                
+                <div style={{ boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px' }} className='p-5 rounded mt-4'>
+
                     <p className="profile-text">
                         <strong>Registered Email:</strong> {userData?.user?.email}
                     </p>
@@ -67,6 +77,51 @@ export default function profile() {
                     </p>
                 </div>
             </div>
+
+            {sessions ? <>
+                <div className="d-flex items-center mt-5 justify-content-around flex-wrap fw-bold" style={{
+                    flexDirection: 'column',
+                    alignItems: 'center'
+                }}>
+                    <span>Sessions Created by {userData?.user?.name}</span>
+
+                    {sessions?.map((ses) => {
+                        return (
+                            <>
+                                {
+                                    ses.user === userData?.user?.id ?
+                                        <>
+                                            <div className='d-flex ' key={ses._id}>
+                                                <UpcomingSessionItem
+                                                    sessionId={ses._id}
+                                                    createdById={ses.user}
+                                                    title={ses.title}
+                                                    subject={ses.subject}
+                                                    start_date={ses.startDate.substr(0, 10)}
+                                                    start_time={ses.startTime}
+                                                    end_date={ses.endDate.substr(0, 10)}
+                                                    end_time={ses.endTime}
+                                                    max_students={ses.maxStudents}
+                                                />
+                                            </div>
+                                        </>
+                                        :
+                                        <></>
+                                }
+
+                            </>
+                        );
+                    })}
+                </div>
+
+            </> : <>
+                <div className='d-flex align-items-center justify-content-center text-center fw-bold mt-4'>
+                    No sessions Created.
+                    <br />
+                    Create some sessions to them here :)
+                </div>
+            </>}
+
         </>
     )
 }
