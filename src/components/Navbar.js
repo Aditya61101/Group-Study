@@ -15,7 +15,12 @@ const Navigation = () => {
     <Navbar bg="primary" expand="xl" variant="dark">
       <Container>
         <Link className="navbar-brand" href="/">
-          Study Planner Inc.
+        <img
+              src="/study planner logo.ico"
+              alt="nav-logo"
+              style={{height:100, width:150}}
+            /><p>Study Planner Inc.</p>
+          
         </Link>
 
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
