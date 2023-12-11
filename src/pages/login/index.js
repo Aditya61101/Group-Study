@@ -3,6 +3,7 @@ import RegisterForm from "@/components/RegisterForm";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import LoginForm from "@/components/LoginForm";
 
 const Login = () => {
   const router = useRouter();
@@ -14,7 +15,7 @@ const Login = () => {
     return <LoadingSpinner />;
   }
   return (
-    <RegisterForm
+    <LoginForm
       title={"Login"}
       linked={"/signup"}
       question={"Don't have an account? "}
