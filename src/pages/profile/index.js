@@ -1,47 +1,70 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useContext, useState } from 'react'
 
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 
 import LoadingSpinner from "@/components/LoadingSpinner";
-
-import styles from "@/styles/form.module.css";
+import { StudySessionContext } from "@/context/StudySessionContextProvider";
 
 export default function profile() {
 
+    const [sessions, setSessions] = useState([]);
+    const [registrations, setRegistrations] = useState([]);
+    const sessionCtx = useContext(StudySessionContext);
+    const [count, setCount] = useState(0);
+    const [registeredCount, setRegisteredCount] = useState(0);
     const router = useRouter();
     const session = useSession();
     const { status, data: userData } = useSession();
 
     useEffect(() => {
-        console.log(userData)
+        sessionCtx.getSessions();
+        sessionCtx.getRegistrations().then((data) => {
+            setRegistrations(data || []);
+        });
+    }, []);
+
+    useEffect(() => {
+        setSessions(sessionCtx.upSessions || []);
+        findSessions();
+        findRegisteredCourses();
+    }, [sessionCtx.upSessions]);
+
+    const findSessions = () => {
+        const userSessions = sessions.filter((ses) => ses.user === userData?.user?.id);
+        setCount(userSessions.length);
+    };
+
+    const findRegisteredCourses = () => {
+        const userRegistrations = registrations.filter((reg) => reg.user === userData?.user?.id);
+        setRegisteredCount(userRegistrations.length);
+    };
+
+    useEffect(() => {
         if (status === 'loading') {
             return;
         }
 
         if (!userData || !userData.user) {
             router.push('/login');
+        } else {
+            findSessions();
+            findRegisteredCourses();
         }
     }, [status, userData, router]);
 
-    if (session?.status === "loading") {
+    if (session?.status === 'loading') {
         return <LoadingSpinner />;
     }
 
-    const user = {
-        Name: 'Pooranjoy Bhattacharya',
-        dateCreated: 'December 9, 2023',
-        sessionsCreated: 5,
-        numberOfSessions: 10,
-        dateOfBirth: 'January 31, 2001',
-        college: 'Manipal Institute of Technology',
-        age: 33,
-        address: '123 St, City, India',
+    const formatDate = (dateString) => {
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        return new Date(dateString).toLocaleDateString('en-US', options);
     };
     return (
         <>
-            <div className="profile-container d-flex items-center mt-5 justify-content-around">
-                <div className='d-flex align-items-center justify-content-center flex-column'>
+            <div className=" d-flex items-center mt-5 justify-content-around flex-wrap md:flex-col">
+                <div className='d-flex align-items-center justify-content-center flex-column md:mb-5'>
 
                     <img
                         src="https://cdn2.iconfinder.com/data/icons/people-flat-design/64/Face-Profile-User-Man-Boy-Person-Avatar-512.png"
@@ -49,37 +72,35 @@ export default function profile() {
                         className="rounded-circle mb-3"
                         width="150"
                     />
-                    <h3 className="profile-title">{user.Name}</h3>
-                    <span>User since 2023</span>
+                    <h3 className="profile-title">{userData?.user?.name}</h3>
+                    <span>{userData?.user?.email}</span>
                 </div>
-                <div style={{margin: '0 0 '}} className={styles.formWrap}>
+                <div style={{ boxShadow: 'rgba(0, 0, 0, 0.35) 0px 5px 15px' }} className='p-5 rounded mt-4'>
 
                     <p className="profile-text">
                         <strong>Registered Email:</strong> {userData?.user?.email}
                     </p>
                     <p className="profile-text">
-                        <strong>Date Created:</strong> {user.dateCreated}
+                        <strong>College:</strong> {userData?.user?.college}
                     </p>
                     <p className="profile-text">
-                        <strong>Sessions Created:</strong> {user.sessionsCreated}
+                        <strong>Sessions Created:</strong> {count}
                     </p>
                     <p className="profile-text">
-                        <strong>Number of Attended:</strong> {user.numberOfSessions}
+                        <strong>Registered Courses:</strong> {registeredCount}
                     </p>
                     <p className="profile-text">
-                        <strong>Date of Birth:</strong> {user.dateOfBirth}
+                        <strong>Age:</strong> {userData?.user?.age}
                     </p>
                     <p className="profile-text">
-                        <strong>College:</strong> {user.college}
+                        <strong>Address:</strong> {userData?.user?.address}
                     </p>
                     <p className="profile-text">
-                        <strong>Age:</strong> {user.age}
-                    </p>
-                    <p className="profile-text">
-                        <strong>Address:</strong> {user.address}
+                        <strong>Member Since:</strong> {formatDate(userData?.user?.createdAt)}
                     </p>
                 </div>
             </div>
+
         </>
     )
 }

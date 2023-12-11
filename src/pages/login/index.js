@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import RegisterForm from "@/components/RegisterForm";
+import RegisterLogin from "@/components/RegisterLogin";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -15,7 +15,7 @@ const Login = () => {
     return <LoadingSpinner />;
   }
   return (
-    <LoginForm
+    <RegisterLogin
       title={"Login"}
       linked={"/signup"}
       question={"Don't have an account? "}
