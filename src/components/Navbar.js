@@ -18,10 +18,11 @@ const Navigation = () => {
         <img
               src="/study planner logo.ico"
               alt="nav-logo"
-              style={{height:100, width:150}}
-            /><p>Study Planner Inc.</p>
+              style={{height:60, width:80}}
+            />
           
         </Link>
+        <Link className="navbar-brand" href="/">Study Planner Inc.</Link>
 
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
