@@ -1,47 +1,54 @@
-import { useEffect, useContext, useState, useMemo, useCallback } from 'react'
+import { useEffect, useContext, useState } from 'react'
 
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { UpcomingSessionItem } from '@/components/UpcomingSessionItem';
 import { StudySessionContext } from "@/context/StudySessionContextProvider";
 
 export default function profile() {
 
-    const [sessions, setSessions] = useState([])
+    const [sessions, setSessions] = useState([]);
     const sessionCtx = useContext(StudySessionContext);
+    const [count, setCount] = useState(0);
+  
+    useEffect(() => {
+      sessionCtx.getSessions();
+    }, []);
 
-    useMemo(
-        () => {
-            setSessions(sessionCtx.upSessions)
-        },
-        [sessionCtx.upSessions]
-    );
-
+    useEffect(() => {
+      setSessions(sessionCtx.upSessions);
+      findSessions();
+    }, [sessionCtx.upSessions]);
+    
+    const findSessions = () => {
+      const userSessions = sessions.filter((ses) => ses.user === userData?.user?.id);
+      setCount(userSessions.length);
+    };
+  
     const router = useRouter();
     const session = useSession();
     const { status, data: userData } = useSession();
-
+  
     useEffect(() => {
-        if (status === 'loading') {
-            sessionCtx.getSessions();
-            return;
-        }
-
-        if (!userData || !userData.user) {
-            router.push('/login');
-        }
-
+      if (status === 'loading') {
+        return;
+      }
+  
+      if (!userData || !userData.user) {
+        router.push('/login');
+      } else {
+        findSessions();
+      }
     }, [status, userData, router]);
-
-    if (session?.status === "loading") {
-        return <LoadingSpinner />;
+  
+    if (session?.status === 'loading') {
+      return <LoadingSpinner />;
     }
-
+  
     const formatDate = (dateString) => {
-        const options = { day: 'numeric', month: 'long', year: 'numeric' };
-        return new Date(dateString).toLocaleDateString('en-US', options);
+      const options = { day: 'numeric', month: 'long', year: 'numeric' };
+      return new Date(dateString).toLocaleDateString('en-US', options);
     };
 
     return (
@@ -67,6 +74,9 @@ export default function profile() {
                         <strong>College:</strong> {userData?.user?.college}
                     </p>
                     <p className="profile-text">
+                        <strong>Sessions Created:</strong> {count}
+                    </p>
+                    <p className="profile-text">
                         <strong>Age:</strong> {userData?.user?.age}
                     </p>
                     <p className="profile-text">
@@ -77,50 +87,6 @@ export default function profile() {
                     </p>
                 </div>
             </div>
-
-            {sessions ? <>
-                <div className="d-flex items-center mt-5 justify-content-around flex-wrap fw-bold" style={{
-                    flexDirection: 'column',
-                    alignItems: 'center'
-                }}>
-                    <span>Sessions Created by {userData?.user?.name}</span>
-
-                    {sessions?.map((ses) => {
-                        return (
-                            <>
-                                {
-                                    ses.user === userData?.user?.id ?
-                                        <>
-                                            <div className='d-flex ' key={ses._id}>
-                                                <UpcomingSessionItem
-                                                    sessionId={ses._id}
-                                                    createdById={ses.user}
-                                                    title={ses.title}
-                                                    subject={ses.subject}
-                                                    start_date={ses.startDate.substr(0, 10)}
-                                                    start_time={ses.startTime}
-                                                    end_date={ses.endDate.substr(0, 10)}
-                                                    end_time={ses.endTime}
-                                                    max_students={ses.maxStudents}
-                                                />
-                                            </div>
-                                        </>
-                                        :
-                                        <></>
-                                }
-
-                            </>
-                        );
-                    })}
-                </div>
-
-            </> : <>
-                <div className='d-flex align-items-center justify-content-center text-center fw-bold mt-4'>
-                    No sessions Created.
-                    <br />
-                    Create some sessions to them here :)
-                </div>
-            </>}
 
         </>
     )
