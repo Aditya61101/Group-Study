@@ -1,8 +1,9 @@
 import React from "react";
-import { Container, Nav, Navbar, NavLink } from "react-bootstrap";
+import { Container, Nav, Navbar, NavLink ,NavDropdown} from "react-bootstrap";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { toast } from "react-toastify";
+
 
 const Navigation = () => {
   const { data: session } = useSession();
@@ -11,11 +12,20 @@ const Navigation = () => {
     signOut();
   };
   return (
-    <Navbar bg="primary" expand="lg" variant="dark">
+    <Navbar bg="primary" expand="xl" variant="dark">
       <Container>
+      <Link className="navbar-brand" href="/">
+        <img
+              src="/logo.png"
+              alt="nav-logo"
+              style={{height:50, width:75}}
+            />
+
+        </Link>
         <Link className="navbar-brand" href="/">
           Study Planner Inc.
         </Link>
+
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
@@ -24,8 +34,11 @@ const Navigation = () => {
                 <Link className="nav-link" href="/upcoming-sessions">
                   Upcoming Sessions
                 </Link>
+                <Link className="nav-link" href="/past-sessions">
+                  Past Sessions
+                </Link>
                 <Link className="nav-link" href="/create-session">
-                  Create a Session
+                  Create Session
                 </Link>
                 <Link className="nav-link" href="/profile">
                   {session?.user?.email}
@@ -44,16 +57,15 @@ const Navigation = () => {
               </>
             ) : (
               <>
-                <Link className="nav-link" href="/login">
-                  Login
-                </Link>
-                <Link className="nav-link" href="/signup">
-                  SignUp
-                </Link>
+                <NavDropdown title="Login" id="basic-nav-dropdown">
+                 <NavDropdown.Item href="/signup">SignUp</NavDropdown.Item>
+                 <NavDropdown.Item href="/login">Login</NavDropdown.Item>
+                </NavDropdown>
               </>
             )}
           </Nav>
         </Navbar.Collapse>
+        
       </Container>
     </Navbar>
   );

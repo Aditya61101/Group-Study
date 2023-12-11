@@ -3,6 +3,7 @@ import RegisterLogin from "@/components/RegisterLogin";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import LoginForm from "@/components/LoginForm";
 
 const Login = () => {
   const router = useRouter();
