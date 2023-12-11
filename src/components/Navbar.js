@@ -14,6 +14,14 @@ const Navigation = () => {
   return (
     <Navbar bg="primary" expand="xl" variant="dark">
       <Container>
+      <Link className="navbar-brand" href="/">
+        <img
+              src="/logo.png"
+              alt="nav-logo"
+              style={{height:50, width:75}}
+            />
+
+        </Link>
         <Link className="navbar-brand" href="/">
           Study Planner Inc.
         </Link>
