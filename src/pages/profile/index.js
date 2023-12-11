@@ -9,48 +9,58 @@ import { StudySessionContext } from "@/context/StudySessionContextProvider";
 export default function profile() {
 
     const [sessions, setSessions] = useState([]);
+    const [registrations, setRegistrations] = useState([]);
     const sessionCtx = useContext(StudySessionContext);
     const [count, setCount] = useState(0);
-  
-    useEffect(() => {
-      sessionCtx.getSessions();
-    }, []);
-
-    useEffect(() => {
-      setSessions(sessionCtx.upSessions);
-      findSessions();
-    }, [sessionCtx.upSessions]);
-    
-    const findSessions = () => {
-      const userSessions = sessions.filter((ses) => ses.user === userData?.user?.id);
-      setCount(userSessions.length);
-    };
-  
+    const [registeredCount, setRegisteredCount] = useState(0);
     const router = useRouter();
     const session = useSession();
     const { status, data: userData } = useSession();
-  
+
     useEffect(() => {
-      if (status === 'loading') {
-        return;
-      }
-  
-      if (!userData || !userData.user) {
-        router.push('/login');
-      } else {
+        sessionCtx.getSessions();
+        sessionCtx.getRegistrations().then((data) => {
+            setRegistrations(data || []);
+        });
+    }, []);
+
+    useEffect(() => {
+        setSessions(sessionCtx.upSessions || []);
         findSessions();
-      }
-    }, [status, userData, router]);
-  
-    if (session?.status === 'loading') {
-      return <LoadingSpinner />;
-    }
-  
-    const formatDate = (dateString) => {
-      const options = { day: 'numeric', month: 'long', year: 'numeric' };
-      return new Date(dateString).toLocaleDateString('en-US', options);
+        findRegisteredCourses();
+    }, [sessionCtx.upSessions]);
+
+    const findSessions = () => {
+        const userSessions = sessions.filter((ses) => ses.user === userData?.user?.id);
+        setCount(userSessions.length);
     };
 
+    const findRegisteredCourses = () => {
+        const userRegistrations = registrations.filter((reg) => reg.user === userData?.user?.id);
+        setRegisteredCount(userRegistrations.length);
+    };
+
+    useEffect(() => {
+        if (status === 'loading') {
+            return;
+        }
+
+        if (!userData || !userData.user) {
+            router.push('/login');
+        } else {
+            findSessions();
+            findRegisteredCourses();
+        }
+    }, [status, userData, router]);
+
+    if (session?.status === 'loading') {
+        return <LoadingSpinner />;
+    }
+
+    const formatDate = (dateString) => {
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        return new Date(dateString).toLocaleDateString('en-US', options);
+    };
     return (
         <>
             <div className=" d-flex items-center mt-5 justify-content-around flex-wrap md:flex-col">
@@ -75,6 +85,9 @@ export default function profile() {
                     </p>
                     <p className="profile-text">
                         <strong>Sessions Created:</strong> {count}
+                    </p>
+                    <p className="profile-text">
+                        <strong>Registered Courses:</strong> {registeredCount}
                     </p>
                     <p className="profile-text">
                         <strong>Age:</strong> {userData?.user?.age}

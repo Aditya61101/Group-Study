@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 export const StudySessionContext = createContext();
 export const StudySessionContextProvider = ({ children }) => {
   const [upSessions, setUpSessions] = useState([]);
+  // const [registrations, setRegistrations] = useState([]);
 
   const getSessions = async () => {
     
@@ -27,6 +28,29 @@ export const StudySessionContextProvider = ({ children }) => {
       toast.error(error.message);
     }
   };
+
+  const getRegistrations = async () => {
+    let url = `${process.env.NEXT_PUBLIC_BASENAME}api/registrations`;
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+      });
+      const data = await response.json();
+      if (response.status === 200) {
+        return data.registeredsession;
+      } else {
+        let errorMessage = "Cannot get upcoming sessions";
+        if (data && data.error) {
+          errorMessage = data.error;
+        }
+        throw new Error(errorMessage);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  }
+
   const sessionSubmission = async (formData, sendMethod, sessionid) => {
     try {
       let url;
@@ -112,6 +136,7 @@ export const StudySessionContextProvider = ({ children }) => {
   const sessionsValue = {
     upSessions,
     getSessions,
+    getRegistrations,
     sessionSubmission,
     deleteSession,
     registerSession,
