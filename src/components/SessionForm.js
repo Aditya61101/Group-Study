@@ -3,6 +3,8 @@ import { Button, Row, Col, Form, InputGroup } from "react-bootstrap";
 import LoadingSpinner from "./LoadingSpinner";
 import { StudySessionContext } from "@/context/StudySessionContextProvider";
 import styles from "@/styles/form.module.css";
+import Image from "next/image";
+import SessionFormImage from "@/assets/session-form-image.png"
 
 export const SessionForm = (props) => {
   const sessionsContext = useContext(StudySessionContext);
@@ -74,7 +76,7 @@ export const SessionForm = (props) => {
     } else {
       setIsIEDate(false);
     }
-    if (maxStud<=0) {
+    if (maxStud <= 0) {
       setNotMStud(true);
       return;
     } else {
@@ -99,156 +101,172 @@ export const SessionForm = (props) => {
     content = <LoadingSpinner />;
   } else {
     content = (
-      <Form
-        noValidate
-        validated={validated}
-        onSubmit={handleSubmit}
-        className={!props.isModal ? styles.formWrap : null}
-        style={{ marginBottom: "30px" }}
-      >
-        <h3 style={{ textAlign: "center" }}>{props.title}</h3>
-        <Row className="mb-3">
-          <Form.Group as={Col} md={12} controlId="validationCustom01">
-            <Form.Label>Title of the session</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Title of the session"
-              ref={titleRef}
-              isInvalid={isINTitle}
-              defaultValue={props?.sessionObj?.title}
-              required
+      <div className="d-flex justify-content-center">
+        <div className={!props.isModal ? "mx-3 p-4 shadow my-3 border rounded-2 d-inline-flex justify-content-center" : "px-4"}>
+          <div className={!props.isModal ? "mx-auto my-auto" : "d-none"}>
+            <Image
+              height={460}
+              width={460}
+              src={SessionFormImage}
+              alt="Form Image"
+              className="px-5 py-5 d-none d-lg-block"
+              style={{ objectFit: "scale-down", maxWidth: "36rem", marginRight: "auto", marginLeft: "auto" }}
             />
-            <Form.Control.Feedback type="invalid">
-              Title is required
-            </Form.Control.Feedback>
-          </Form.Group>
-
-          <Form.Group
-            as={Col}
-            md={12}
-            controlId="validationCustom02"
-            className="my-2"
+          </div>
+          <Form
+            noValidate
+            validated={validated}
+            onSubmit={handleSubmit}
+            style={{ color: "#0D0C22", maxWidth: "35rem" }}
+            className="pl-5"
           >
-            <Form.Label>Subject</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter subject of the session"
-              defaultValue={props?.sessionObj?.subject}
-              ref={subjectRef}
-            />
-          </Form.Group>
+            <h3 className="fs-1 fw-bolder mb-4">{props.title}</h3>
+            <Row className="mb-3">
+              <Form.Group as={Col} md={12} controlId="validationCustom01">
+                <Form.Label className="fw-semibold">Title</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Session Title"
+                  ref={titleRef}
+                  isInvalid={isINTitle}
+                  defaultValue={props?.sessionObj?.title}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">
+                  Title is required!
+                </Form.Control.Feedback>
+              </Form.Group>
 
-          <Form.Group as={Col} md="6" controlId="validationCustomStartDate">
-            <Form.Label>Start Date</Form.Label>
-            <InputGroup hasValidation>
-              <Form.Control
-                type="date"
-                aria-describedby="inputGroupPrepend"
-                ref={startDRef}
-                isInvalid={isSDate}
-              defaultValue={props?.sessionObj?.start_date}
-                required
-              />
-              <Form.Control.Feedback type="invalid">
-                Please choose a start date.
-              </Form.Control.Feedback>
-            </InputGroup>
-          </Form.Group>
+              <Form.Group
+                as={Col}
+                md={12}
+                controlId="validationCustom02"
+                className="my-2"
+              >
+                <Form.Label className="fw-semibold">Description</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  placeholder="Enter a brief description of the study session, including topics to be covered, goals, or any specific instructions."
+                  defaultValue={props?.sessionObj?.subject}
+                  ref={subjectRef}
+                  rows={4}
+                />
+              </Form.Group>
 
-          <Form.Group as={Col} md="6" controlId="validationCustomUsername">
-            <Form.Label>Start Time</Form.Label>
-            <InputGroup hasValidation>
-              <Form.Control
-                type="time"
-                aria-describedby="inputGroupPrepend"
-                ref={startTRef}
-                isInvalid={isSTime}
-              defaultValue={props?.sessionObj?.start_time}
+              <div className="d-flex gap-3 flex-wrap">
+                <Form.Group
+                  controlId="validationCustomStartDate"
+                  className="flex-grow-1"
+                >
+                  <Form.Label className="fw-semibold">Start Date</Form.Label>
+                  <InputGroup hasValidation>
+                    <Form.Control
+                      type="date"
+                      aria-describedby="inputGroupPrepend"
+                      ref={startDRef}
+                      isInvalid={isSDate}
+                      defaultValue={props?.sessionObj?.start_date}
+                      required
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      Please choose a valid start date.
+                    </Form.Control.Feedback>
+                  </InputGroup>
+                </Form.Group>
+                <Form.Group
+                  controlId="validationCustomUsername"
+                  className="flex-grow-1"
+                >
+                  <Form.Label className="fw-semibold">End Date</Form.Label>
+                  <InputGroup hasValidation>
+                    <Form.Control
+                      type="date"
+                      aria-describedby="inputGroupPrepend"
+                      ref={endDRef}
+                      isInvalid={isEDate}
+                      defaultValue={props?.sessionObj?.end_date}
 
-                required
-              />
-              <Form.Control.Feedback type="invalid">
-                Please choose a start time.
-              </Form.Control.Feedback>
-            </InputGroup>
-          </Form.Group>
+                      required
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      Please choose a valid end date.
+                    </Form.Control.Feedback>
+                  </InputGroup>
+                </Form.Group>
+              </div>
 
-          <Form.Group
-            as={Col}
-            md="6"
-            controlId="validationCustomUsername"
-            className="my-2"
-          >
-            <Form.Label>End Date</Form.Label>
-            <InputGroup hasValidation>
-              <Form.Control
-                type="date"
-                aria-describedby="inputGroupPrepend"
-                ref={endDRef}
-                isInvalid={isEDate}
-              defaultValue={props?.sessionObj?.end_date}
+              <div className="d-flex gap-3 flex-wrap my-3">
+                <Form.Group controlId="validationCustomUsername" className="flex-grow-1">
+                  <Form.Label className="fw-semibold">Start Time</Form.Label>
+                  <InputGroup hasValidation>
+                    <Form.Control
+                      type="time"
+                      aria-describedby="inputGroupPrepend"
+                      ref={startTRef}
+                      isInvalid={isSTime}
+                      defaultValue={props?.sessionObj?.start_time}
 
-                required
-              />
-              <Form.Control.Feedback type="invalid">
-                Please choose a correct end date.
-              </Form.Control.Feedback>
-            </InputGroup>
-          </Form.Group>
+                      required
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      Please choose a valid start time.
+                    </Form.Control.Feedback>
+                  </InputGroup>
+                </Form.Group>
 
-          <Form.Group
-            as={Col}
-            md="6"
-            controlId="validationCustomUsername"
-            className="my-2"
-          >
-            <Form.Label>End Time</Form.Label>
-            <InputGroup hasValidation>
-              <Form.Control
-                type="time"
-                aria-describedby="inputGroupPrepend"
-                ref={endTRef}
-                isInvalid={isETime}
-              defaultValue={props?.sessionObj?.end_time}
+                <Form.Group
+                  controlId="validationCustomUsername"
+                  className="flex-grow-1"
+                >
+                  <Form.Label className="fw-semibold">End Time</Form.Label>
+                  <InputGroup hasValidation>
+                    <Form.Control
+                      type="time"
+                      aria-describedby="inputGroupPrepend"
+                      ref={endTRef}
+                      isInvalid={isETime}
+                      defaultValue={props?.sessionObj?.end_time}
+                      required
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      Please choose a valid end time.
+                    </Form.Control.Feedback>
+                  </InputGroup>
+                </Form.Group>
+              </div>
 
-                required
-              />
-              <Form.Control.Feedback type="invalid">
-                Please choose a correct end time.
-              </Form.Control.Feedback>
-            </InputGroup>
-          </Form.Group>
-
-          <Form.Group
-            as={Col}
-            md="12"
-            controlId="validationCustomUsername"
-            className="my-2"
-          >
-            <Form.Label>Maximum student in the session</Form.Label>
-            <InputGroup hasValidation>
-              <Form.Control
-                type="number"
-                aria-describedby="inputGroupPrepend"
-                placeholder="Maximum student"
-                ref={maxStudRef}
-                isInvalid={isMStud}
-              defaultValue={props.method==="PUT"?props.sessionObj.max_students:""}
-
-                required
-              />
-              <Form.Control.Feedback type="invalid">
-                Please choose a valid maximum no. of students.
-              </Form.Control.Feedback>
-            </InputGroup>
-          </Form.Group>
-        </Row>
-        <div className="d-grid">
-          <Button type="submit" onClick={props.handleClose}>
-            Submit
-          </Button>
+              <Form.Group
+                as={Col}
+                md="12"
+                controlId="validationCustomUsername"
+                className="my-2"
+              >
+                <Form.Label className="fw-semibold">Max. Enrollment</Form.Label>
+                <InputGroup hasValidation>
+                  <Form.Control
+                    type="number"
+                    aria-describedby="inputGroupPrepend"
+                    placeholder="Maximum number of students"
+                    ref={maxStudRef}
+                    isInvalid={isMStud}
+                    defaultValue={props.method === "PUT" ? props.sessionObj.max_students : ""}
+                    required
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Please choose a valid number.
+                  </Form.Control.Feedback>
+                </InputGroup>
+              </Form.Group>
+            </Row>
+            <div className="d-grid">
+              <Button type="submit" onClick={props.handleClose}>
+                Submit
+              </Button>
+            </div>
+          </Form>
         </div>
-      </Form>
+      </div>
+
     );
   }
   return content;
