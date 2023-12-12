@@ -116,7 +116,6 @@ const RegisterSignup = (props) => {
     } else {
       handleLogin(enteredEmail, enteredPassword);
     }
-
   };
 
 
@@ -135,13 +134,14 @@ const RegisterSignup = (props) => {
               alt="Sign up Image"
               className="px-5 py-5 d-none d-lg-block"
               style={{ objectFit: "contain", maxWidth: "36rem", marginRight: "auto", marginLeft: "auto" }}
+              priority
             />
           </div>
           <Form
             noValidate
             validated={validated}
             onSubmit={handleSubmit}
-            className="mx-3"
+            className="mx-3 my-auto"
             style={{ maxWidth: "35rem" }}
           >
             <h3 className="fw-bolder fs-1 mb-4" >{props.title}</h3>
