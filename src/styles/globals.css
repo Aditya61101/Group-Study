@@ -100,4 +100,9 @@ a {
   html {
     color-scheme: dark;
   }
+  ::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+
 }
+
