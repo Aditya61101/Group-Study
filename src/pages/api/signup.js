@@ -5,17 +5,21 @@ import bcrypt from "bcrypt";
 const handler = async (req, res) => {
   try {
     const { email, password, cnfPassword } = req.body;
-    if (!email || !password) {
-      res.status(400).json({ error: "Please enter all fields!" });
+    console.log("Request Body:", req.body);
+    if (!email || !password || !cnfPassword) {
+      console.error("Validation Error: Please enter all fields");
+      res.status(400).json({ error: "Please enter all fields" });
       return;
     }
     const user = await User.findOne({ email });
     if (user) {
-      res.status(409).json({ error: "User already exists!" });
+      console.error("Conflict Error: User already exists");
+      res.status(409).json({ error: "User already exists" });
       return;
     }
 
     if (password !== cnfPassword) {
+      console.error("Validation Error: Passwords do not match");
       res.status(400).json({ error: "Passwords do not match" });
       return;
     } else {
@@ -24,6 +28,7 @@ const handler = async (req, res) => {
         email,
         password: hashedPassword,
       });
+      console.log("User created:", createdUser);
       res.status(201).json({
         success: true,
         id: createdUser._id,
@@ -31,6 +36,7 @@ const handler = async (req, res) => {
       });
     }
   } catch (error) {
+    console.error("Internal Server Error:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

@@ -11,22 +11,6 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, "Password should be of at least 6 characters!"],
     },
-    name: {
-      type: String,
-      required: [true, "Obviously you have a name!"],
-    }, 
-    age: {
-      type: Number,
-      required: true
-    },
-    college: {
-      type: String,
-      required: true
-    },
-    address: {
-      type: String,
-      required: true
-    }
   },
   {
     timestamps: true,
