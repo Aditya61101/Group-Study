@@ -6,6 +6,8 @@ import styles from "@/styles/form.module.css";
 import LoadingSpinner from "./LoadingSpinner";
 import { signIn } from "next-auth/react";
 import { toast } from "react-toastify";
+import SignUpImage from "@/assets/sign-up-image.png";
+import Image from "next/image";
 
 const RegisterSignup = (props) => {
   const [validated, setValidated] = useState(false);
@@ -14,7 +16,7 @@ const RegisterSignup = (props) => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-// User Data 
+  // User Data 
   const passwordRef = useRef();
   const emailRef = useRef();
   const nameRef = useRef();
@@ -114,7 +116,6 @@ const RegisterSignup = (props) => {
     } else {
       handleLogin(enteredEmail, enteredPassword);
     }
-
   };
 
 
@@ -123,116 +124,132 @@ const RegisterSignup = (props) => {
     content = <LoadingSpinner />;
   } else {
     content = (
-      <Form
-        noValidate
-        validated={validated}
-        onSubmit={handleSubmit}
-        className={styles.formWrap}
-      >
-        <h3 style={{ textAlign: "center" }}>{props.title}</h3>
-        <Row className="mb-3">
-          <Form.Group as={Col} md="12" controlId="validationCustomEmail">
-            <Form.Label>Email</Form.Label>
-            <InputGroup hasValidation>
-              <Form.Control
-                type="email"
-                placeholder="Enter email"
-                aria-describedby="inputGroupPrepend"
-                ref={emailRef}
-                isInvalid={isInvalidEmail}
-                required
-              />
-              <Form.Control.Feedback type="invalid">
-                Please enter a valid email address
-              </Form.Control.Feedback>
-            </InputGroup>
-          </Form.Group>
-
-          <Form.Group
-            as={Col}
-            md="12"
-            controlId="validationCustomPassword"
-            className="my-2"
+      <div className="d-flex justify-content-center">
+        <div className="mx-3 p-4 shadow my-3 border rounded-2 d-inline-flex justify-content-center">
+          <div className="mx-auto my-auto">
+            <Image
+              height={460}
+              width={460}
+              src={SignUpImage}
+              alt="Sign up Image"
+              className="px-5 py-5 d-none d-lg-block"
+              style={{ objectFit: "contain", maxWidth: "36rem", marginRight: "auto", marginLeft: "auto" }}
+              priority
+            />
+          </div>
+          <Form
+            noValidate
+            validated={validated}
+            onSubmit={handleSubmit}
+            className="mx-3 my-auto"
+            style={{ maxWidth: "35rem" }}
           >
-            <Form.Label>Password</Form.Label>
-            <InputGroup hasValidation>
-              <Form.Control
-                type="password"
-                placeholder="Enter password"
-                aria-describedby="inputGroupPrepend"
-                ref={passwordRef}
-                isInvalid={isInvalidPassword}
-                required
-                autoComplete="on"
-              />
-              <Form.Control.Feedback type="invalid">
-                Please should be of at least 6 characters
-              </Form.Control.Feedback>
-            </InputGroup>
-          </Form.Group>
-          {error && <small style={{ color: "red" }}>{error}</small>}
+            <h3 className="fw-bolder fs-1 mb-4" >{props.title}</h3>
+            <Row className="mb-3">
+              <Form.Group as={Col} md="12" controlId="validationCustomEmail">
+                <Form.Label className="fw-semibold">Email</Form.Label>
+                <InputGroup hasValidation>
+                  <Form.Control
+                    type="email"
+                    placeholder="Enter email"
+                    aria-describedby="inputGroupPrepend"
+                    ref={emailRef}
+                    isInvalid={isInvalidEmail}
+                    required
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Please enter a valid email address
+                  </Form.Control.Feedback>
+                </InputGroup>
+              </Form.Group>
 
-          <Form.Group as={Col} md="12" controlId="validationCustomName">
-            <Form.Label>Name</Form.Label>
-            <InputGroup hasValidation>
-              <Form.Control
-                type="text"
-                placeholder="Enter your Name"
-                aria-describedby="inputGroupPrepend"
-                ref={nameRef}
-                required
-              />
-            </InputGroup>
-          </Form.Group>
+              <Form.Group
+                as={Col}
+                md="12"
+                controlId="validationCustomPassword"
+                className="my-2"
+              >
+                <Form.Label className="fw-semibold">Password</Form.Label>
+                <InputGroup hasValidation>
+                  <Form.Control
+                    type="password"
+                    placeholder="Enter password"
+                    aria-describedby="inputGroupPrepend"
+                    ref={passwordRef}
+                    isInvalid={isInvalidPassword}
+                    required
+                    autoComplete="on"
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Please should be of at least 6 characters
+                  </Form.Control.Feedback>
+                </InputGroup>
+              </Form.Group>
+              {error && <small style={{ color: "red" }}>{error}</small>}
 
-          <Form.Group as={Col} md="12" controlId="validationCustomAge">
-            <Form.Label>Age</Form.Label>
-            <InputGroup hasValidation>
-              <Form.Control
-                type="number"
-                placeholder="Enter your Age"
-                aria-describedby="inputGroupPrepend"
-                ref={ageRef}
-                required
-              />
-            </InputGroup>
-          </Form.Group>
+              <Form.Group as={Col} md="12" controlId="validationCustomName">
+                <Form.Label className="fw-semibold">Name</Form.Label>
+                <InputGroup hasValidation>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter your Name"
+                    aria-describedby="inputGroupPrepend"
+                    ref={nameRef}
+                    required
+                  />
+                </InputGroup>
+              </Form.Group>
 
-          <Form.Group as={Col} md="12" controlId="validationCustomcollege">
-            <Form.Label>College</Form.Label>
-            <InputGroup hasValidation>
-              <Form.Control
-                type="text"
-                placeholder="Enter your College Name"
-                aria-describedby="inputGroupPrepend"
-                ref={collegeRef}
-                required
-              />
-            </InputGroup>
-          </Form.Group>
-          <Form.Group as={Col} md="12" controlId="validationCustomaddress">
-            <Form.Label>Address</Form.Label>
-            <InputGroup hasValidation>
-              <Form.Control
-                type="text"
-                placeholder="Enter your Address"
-                aria-describedby="inputGroupPrepend"
-                ref={addressRef}
-                required
-              />
-            </InputGroup>
-          </Form.Group>
-        </Row>
-        <div className="d-grid">
-          <Button type="submit">Submit</Button>
+              <Form.Group className="mt-2" as={Col} md="12" controlId="validationCustomAge">
+                <Form.Label className="fw-semibold">Age</Form.Label>
+                <InputGroup hasValidation>
+                  <Form.Control
+                    type="number"
+                    placeholder="Enter your Age"
+                    aria-describedby="inputGroupPrepend"
+                    ref={ageRef}
+                    required
+                  />
+                </InputGroup>
+              </Form.Group>
+
+              <Form.Group className="mt-2" as={Col} md="12" controlId="validationCustomcollege">
+                <Form.Label className="fw-semibold">College</Form.Label>
+                <InputGroup hasValidation>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter your College Name"
+                    aria-describedby="inputGroupPrepend"
+                    ref={collegeRef}
+                    required
+                  />
+                </InputGroup>
+              </Form.Group>
+              <Form.Group className="mt-2" as={Col} md="12" controlId="validationCustomaddress">
+                <Form.Label className="fw-semibold">Address</Form.Label>
+                <InputGroup hasValidation>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter your Address"
+                    aria-describedby="inputGroupPrepend"
+                    ref={addressRef}
+                    required
+                  />
+                </InputGroup>
+              </Form.Group>
+            </Row>
+            <div className="d-grid">
+              <Button type="submit">Submit</Button>
+            </div>
+            <p className="text-end my-2">
+              {props.question}
+              <Link href={props.linked} style={{ textDecoration: "none" }}>
+                {props.oppo}
+              </Link>
+            </p>
+          </Form>
         </div>
-        <p className="text-end my-2">
-          {props.question}
-          <Link href={props.linked} style={{ textDecoration: "none" }}>
-            {props.oppo}
-          </Link>
-        </p>
-      </Form>
+      </div>
     );
   }
   return content;
