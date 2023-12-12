@@ -16,7 +16,7 @@ const Login = () => {
   }
   return (
     <RegisterLogin
-      title={"Login"}
+      title={"Login 🔑"}
       linked={"/signup"}
       question={"Don't have an account? "}
       oppo={"Sign Up"}
