@@ -103,6 +103,30 @@ a {
   ::-webkit-calendar-picker-indicator {
     filter: invert(1);
   }
-
 }
 
+#landing-page-1 {
+  max-height: 100vh;
+  min-height: calc(100vh - 76px);
+}
+
+#heading {
+  font-size: 4.5rem;
+}
+
+@media only screen and ( max-width: 640px) {
+  #heading {
+    font-size: 2.95rem;
+  }
+
+  #landing-image > img {
+    height: 360px;
+    width: 440px;
+  }
+}
+
+@media only screen and (min-width: 640px) {
+  #landing-page-1 {
+    min-height: 100%;
+  }
+}
