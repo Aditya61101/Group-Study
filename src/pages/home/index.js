@@ -26,7 +26,7 @@ const HomePage = () => {
     <ThemeProvider theme={theme}>
       <section id="landing-page-1">
         <h1 id="heading" className="fw-bold text-center mt-4"><span style={{ color: "#0D6EFD" }}>Efficient Study Planning</span> <br />Made Easy!</h1>
-        <div className="d-flex justify-content-center px-3 my-4 gap-3" >
+        <div className="d-flex justify-content-center px-3 my-4 gap-3 flex-wrap" >
           <Button variant="contained" color="blue" endIcon={<EventNoteIcon style={{ color: "white" }} />} href="/create-session">
             <span style={{ color: "white" }}>Create Session</span>
           </Button>
@@ -47,8 +47,8 @@ const HomePage = () => {
         </div>
       </section>
       <section id="landing-page-2" className="py-5" style={{ backgroundColor: "#d9e8ff" }}>
-        <div className="px-3 fs-4 text-center" >
-          <h1 className="fw-bold mb-4">What is Study Planner Inc.?</h1>
+        <div className="px-3 text-center" >
+          <h1 className="fw-bold mb-3 fs-1">What is Study Planner Inc.?</h1>
           <p className="mx-auto" style={{ maxWidth: "45rem" }}>
             Study Planner Inc. is a platform that lets students plan group study sessions with other students.
             In this platform, a registered student can create its own session or can register for other upcoming sessions.
@@ -92,7 +92,7 @@ const HomePage = () => {
       <section className="py-5">
         <h1 className="text-center fw-bold">Get Started Now!⚡</h1>
         <p className="text-center">Go ahead and create a powerful session! Or join someone else's!</p>
-        <div className="d-flex justify-content-center gap-3 px-3 my-4" >
+        <div className="d-flex justify-content-center gap-3 px-3 my-4 flex-wrap" >
           <Button variant="contained" color="blue" endIcon={<EventNoteIcon style={{ color: "white" }} />} href="/create-session">
             <span style={{ color: "white" }}>Create Session</span>
           </Button>
