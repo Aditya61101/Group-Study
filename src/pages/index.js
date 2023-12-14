@@ -15,6 +15,7 @@ export default function Home() {
           content="A study app where people can come and join or create any study session!"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="manifest" href="/manifest.json" />
         <link rel="icon" href="/logo.ico" />
       </Head>
       <Box
