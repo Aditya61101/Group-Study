@@ -1,0 +1,34 @@
+{
+  "short_name": "Study-Planner Inc.",
+  "name": "Group-Study with Study-Planner Inc.",
+  "description": "Study Planner Inc. is a platform that lets students plan group study sessions with other students.",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "150x150",
+      "type": "image/png"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo256.png",
+      "type": "image/png",
+      "sizes": "256x256"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "orientation":"portrait-primary",
+  "id": ".",
+  "scope": ".",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
