@@ -8,6 +8,7 @@ import { signIn } from "next-auth/react";
 import { toast } from "react-toastify";
 import SignUpImage from "@/assets/sign-up-image.png";
 import Image from "next/image";
+import { useTheme } from "next-themes";
 
 const RegisterSignup = (props) => {
   const [validated, setValidated] = useState(false);
@@ -15,8 +16,10 @@ const RegisterSignup = (props) => {
   const [isInvalidPassword, setIsInvalidPassword] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  // User Data 
+  const { theme, setTheme } = useTheme();
+  // console.log(theme);
+  let darkMode = theme === "dark";
+  // User Data
   const passwordRef = useRef();
   const emailRef = useRef();
   const nameRef = useRef();
@@ -41,12 +44,12 @@ const RegisterSignup = (props) => {
           name: name,
           age: age,
           college: college,
-          address: address
+          address: address,
         }),
       });
       const data = await res.json();
       if (res.ok) {
-        console.log(data);
+        // console.log(data);
         toast.success("Sign up successful!");
         router.push("/login");
       } else {
@@ -64,7 +67,6 @@ const RegisterSignup = (props) => {
     }
   };
 
-
   const handleLogin = async (email, password) => {
     setIsLoading(true);
     try {
@@ -73,7 +75,7 @@ const RegisterSignup = (props) => {
         password,
         redirect: false,
       });
-      console.log(res);
+      // console.log(res);
       if (res.error) {
         throw new Error(res.error);
       } else if (res.ok) {
@@ -87,9 +89,7 @@ const RegisterSignup = (props) => {
     }
   };
 
-
   const handleSubmit = async (event) => {
-
     event.preventDefault();
     setError(null);
 
@@ -98,8 +98,7 @@ const RegisterSignup = (props) => {
     const enteredName = nameRef.current.value;
     const enteredAge = ageRef.current.value;
     const enteredcollege = collegeRef.current.value;
-    const enteredAddress = addressRef.current.value
-
+    const enteredAddress = addressRef.current.value;
 
     if (enteredEmail.length === 0 || !enteredEmail.includes("@")) {
       setIsInvalidEmail(true);
@@ -112,20 +111,44 @@ const RegisterSignup = (props) => {
     } else setIsInvalidPassword(false);
 
     if (props.postUrl === "SignUp") {
-      handleSignUp(enteredEmail, enteredPassword, enteredName, enteredAge, enteredcollege, enteredAddress);
+      handleSignUp(
+        enteredEmail,
+        enteredPassword,
+        enteredName,
+        enteredAge,
+        enteredcollege,
+        enteredAddress
+      );
     } else {
       handleLogin(enteredEmail, enteredPassword);
     }
   };
-
 
   let content = null;
   if (isLoading) {
     content = <LoadingSpinner />;
   } else {
     content = (
-      <div className="d-flex justify-content-center">
-        <div className="mx-3 p-4 shadow my-3 border rounded-2 d-inline-flex justify-content-center">
+      <div
+        className={` d-flex justify-content-center align-items-center  ${
+          darkMode ? "bg-black text-white" : "bg-white text-dark"
+        } `}
+        style={{
+          height: "91vh",
+          
+        }}
+      >
+        <div
+          className="p-4 border rounded-2 d-inline-flex justify-content-center "
+          style={{
+            height: "fit-content",
+            boxShadow: `${
+              darkMode
+                ? "0 -2px 10px rgba(255, 255, 255, 1)"
+                : "rgba(0, 0, 0, 0.35) 0px 5px 15px"
+            }`,
+          }}
+        >
           <div className="mx-auto my-auto">
             <Image
               height={460}
@@ -133,7 +156,12 @@ const RegisterSignup = (props) => {
               src={SignUpImage}
               alt="Sign up Image"
               className="px-5 py-5 d-none d-lg-block"
-              style={{ objectFit: "contain", maxWidth: "36rem", marginRight: "auto", marginLeft: "auto" }}
+              style={{
+                objectFit: "contain",
+                maxWidth: "36rem",
+                marginRight: "auto",
+                marginLeft: "auto",
+              }}
               priority
             />
           </div>
@@ -144,7 +172,7 @@ const RegisterSignup = (props) => {
             className="mx-3 my-auto"
             style={{ maxWidth: "35rem" }}
           >
-            <h3 className="fw-bolder fs-1 mb-4" >{props.title}</h3>
+            <h3 className="fw-bolder fs-1 mb-4">{props.title}</h3>
             <Row className="mb-3">
               <Form.Group as={Col} md="12" controlId="validationCustomEmail">
                 <Form.Label className="fw-semibold">Email</Form.Label>
@@ -200,10 +228,16 @@ const RegisterSignup = (props) => {
                 </InputGroup>
               </Form.Group>
 
-              <Form.Group className="mt-2" as={Col} md="12" controlId="validationCustomAge">
+              <Form.Group
+                className="mt-2"
+                as={Col}
+                md="12"
+                controlId="validationCustomAge"
+              >
                 <Form.Label className="fw-semibold">Age</Form.Label>
                 <InputGroup hasValidation>
                   <Form.Control
+                    min={0}
                     type="number"
                     placeholder="Enter your Age"
                     aria-describedby="inputGroupPrepend"
@@ -213,7 +247,12 @@ const RegisterSignup = (props) => {
                 </InputGroup>
               </Form.Group>
 
-              <Form.Group className="mt-2" as={Col} md="12" controlId="validationCustomcollege">
+              <Form.Group
+                className="mt-2"
+                as={Col}
+                md="12"
+                controlId="validationCustomcollege"
+              >
                 <Form.Label className="fw-semibold">College</Form.Label>
                 <InputGroup hasValidation>
                   <Form.Control
@@ -225,7 +264,12 @@ const RegisterSignup = (props) => {
                   />
                 </InputGroup>
               </Form.Group>
-              <Form.Group className="mt-2" as={Col} md="12" controlId="validationCustomaddress">
+              <Form.Group
+                className="mt-2"
+                as={Col}
+                md="12"
+                controlId="validationCustomaddress"
+              >
                 <Form.Label className="fw-semibold">Address</Form.Label>
                 <InputGroup hasValidation>
                   <Form.Control

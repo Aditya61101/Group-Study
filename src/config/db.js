@@ -12,7 +12,7 @@ const connectDB = (handler) => async (req, res) => {
     cachedConnection = conn;
     return handler(req, res);
   } catch (error) {
-    console.error(`Error: ${error.message}`);
+    // console.error(`Error: ${error.message}`);
     process.exit(1);
   }
 };

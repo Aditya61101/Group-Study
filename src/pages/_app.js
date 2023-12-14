@@ -4,8 +4,9 @@ import { SSRProvider } from "react-bootstrap";
 import { StudySessionContextProvider } from "@/context/StudySessionContextProvider";
 import { SessionProvider } from "next-auth/react";
 import Navbar from "@/components/Navbar";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ThemeProvider from "@/context/ModeContext";
 
 export default function App({
   Component,
@@ -13,13 +14,15 @@ export default function App({
 }) {
   return (
     <SSRProvider>
-      <SessionProvider session={session}>
-        <StudySessionContextProvider>
-          <Navbar />
-          <Component {...pageProps} />
-          <ToastContainer />
-        </StudySessionContextProvider>
-      </SessionProvider>
+      <ThemeProvider>
+        <SessionProvider session={session}>
+          <StudySessionContextProvider>
+            <Navbar />
+            <Component {...pageProps} />
+            <ToastContainer />
+          </StudySessionContextProvider>
+        </SessionProvider>
+      </ThemeProvider>
     </SSRProvider>
   );
 }

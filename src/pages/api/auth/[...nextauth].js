@@ -9,12 +9,10 @@ export const authOptions = {
     CredentialsProvider({
       name: "credentials",
       credentials: {
-
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-
         try {
           if (!credentials.email || !credentials.password) {
             throw new Error("Please enter all the fields");

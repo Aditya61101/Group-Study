@@ -4,7 +4,9 @@ import LoadingSpinner from "./LoadingSpinner";
 import { StudySessionContext } from "@/context/StudySessionContextProvider";
 import styles from "@/styles/form.module.css";
 import Image from "next/image";
-import SessionFormImage from "@/assets/session-form-image.png"
+import SessionFormImage from "@/assets/session-form-image.png";
+import { useTheme } from "next-themes";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 
 export const SessionForm = (props) => {
   const sessionsContext = useContext(StudySessionContext);
@@ -16,7 +18,9 @@ export const SessionForm = (props) => {
   const [isSTime, setIsISTime] = useState(null);
   const [isETime, setIsIETime] = useState(null);
   const [isMStud, setNotMStud] = useState(null);
-
+  const { theme, setTheme } = useTheme();
+  // console.log(theme);
+  let darkMode = theme === "dark";
   const titleRef = useRef();
   const subjectRef = useRef();
   const startDRef = useRef();
@@ -34,6 +38,7 @@ export const SessionForm = (props) => {
     const endDate = endDRef.current.value;
     const endTime = endTRef.current.value;
     const maxStud = maxStudRef.current.value;
+
     if (title.length === 0) {
       setIsINTitle(true);
       return;
@@ -94,15 +99,40 @@ export const SessionForm = (props) => {
       endTime: endTime,
       maxStudents: maxStud,
     };
-    sessionsContext.sessionSubmission(formData, props.method, props.sessionObj?.sessionId);
+    sessionsContext.sessionSubmission(
+      formData,
+      props.method,
+      props.sessionObj?.sessionId
+    );
   };
   let content = null;
   if (isLoading) {
     content = <LoadingSpinner />;
   } else {
     content = (
-      <div className="d-flex justify-content-center">
-        <div className={!props.isModal ? "mx-3 p-4 shadow my-3 border rounded-2 d-inline-flex justify-content-center" : "px-4"}>
+      <div
+        className={`d-flex justify-content-center align-items-center bg-${
+          darkMode ? "black" : "white"
+        }`}
+        style={{
+          height: "91vh",
+        }}
+      >
+        <div
+          className={
+            !props.isModal
+              ? "mx-3 p-4 border rounded-2 d-inline-flex justify-content-center "
+              : "px-4"
+          }
+          style={{
+            height: "fit-content",
+            boxShadow: `${
+              darkMode
+                ? "0 -2px 10px rgba(255, 255, 255, 1)"
+                : "rgba(0, 0, 0, 0.35) 0px 5px 15px"
+            }`,
+          }}
+        >
           <div className={!props.isModal ? "mx-auto my-auto" : "d-none"}>
             <Image
               height={460}
@@ -110,15 +140,20 @@ export const SessionForm = (props) => {
               src={SessionFormImage}
               alt="Form Image"
               className="px-5 py-5 d-none d-lg-block"
-              style={{ objectFit: "scale-down", maxWidth: "36rem", marginRight: "auto", marginLeft: "auto" }}
+              style={{
+                objectFit: "scale-down",
+                maxWidth: "36rem",
+                marginRight: "auto",
+                marginLeft: "auto",
+              }}
             />
           </div>
           <Form
             noValidate
             validated={validated}
             onSubmit={handleSubmit}
-            style={{ color: "#0D0C22", maxWidth: "35rem" }}
-            className="pl-5"
+            style={{ maxWidth: "35rem" }}
+            className={`pl-5 ${darkMode ? "text-white" : "text-dark"}`}
           >
             <h3 className="fs-1 fw-bolder mb-4">{props.title}</h3>
             <Row className="mb-3">
@@ -158,7 +193,7 @@ export const SessionForm = (props) => {
                   controlId="validationCustomStartDate"
                   className="flex-grow-1"
                 >
-                  <Form.Label className="fw-semibold">Start Date</Form.Label>
+                  <Form.Label className="fw-semibold ">Start Date</Form.Label>
                   <InputGroup hasValidation>
                     <Form.Control
                       type="date"
@@ -167,6 +202,9 @@ export const SessionForm = (props) => {
                       isInvalid={isSDate}
                       defaultValue={props?.sessionObj?.start_date}
                       required
+                      className={`${
+                        darkMode ? "bg-black text-white" : "bg-white text-dark"
+                      } `}
                     />
                     <Form.Control.Feedback type="invalid">
                       Please choose a valid start date.
@@ -185,8 +223,10 @@ export const SessionForm = (props) => {
                       ref={endDRef}
                       isInvalid={isEDate}
                       defaultValue={props?.sessionObj?.end_date}
-
                       required
+                      className={`${
+                        darkMode ? "bg-black text-white" : "bg-white text-dark"
+                      } `}
                     />
                     <Form.Control.Feedback type="invalid">
                       Please choose a valid end date.
@@ -196,7 +236,10 @@ export const SessionForm = (props) => {
               </div>
 
               <div className="d-flex gap-3 flex-wrap my-3">
-                <Form.Group controlId="validationCustomUsername" className="flex-grow-1">
+                <Form.Group
+                  controlId="validationCustomUsername"
+                  className="flex-grow-1"
+                >
                   <Form.Label className="fw-semibold">Start Time</Form.Label>
                   <InputGroup hasValidation>
                     <Form.Control
@@ -205,8 +248,10 @@ export const SessionForm = (props) => {
                       ref={startTRef}
                       isInvalid={isSTime}
                       defaultValue={props?.sessionObj?.start_time}
-
                       required
+                      className={`${
+                        darkMode ? "bg-black text-white" : "bg-white text-dark"
+                      } `}
                     />
                     <Form.Control.Feedback type="invalid">
                       Please choose a valid start time.
@@ -227,6 +272,12 @@ export const SessionForm = (props) => {
                       isInvalid={isETime}
                       defaultValue={props?.sessionObj?.end_time}
                       required
+                      className={`${
+                        darkMode ? "bg-black text-white" : "bg-white text-dark"
+                      } `}
+                      style={{
+                        color: "white",
+                      }}
                     />
                     <Form.Control.Feedback type="invalid">
                       Please choose a valid end time.
@@ -244,12 +295,20 @@ export const SessionForm = (props) => {
                 <Form.Label className="fw-semibold">Max. Enrollment</Form.Label>
                 <InputGroup hasValidation>
                   <Form.Control
+                    className={`${
+                      darkMode ? "bg-black text-white" : "bg-white text-dark"
+                    } `}
+                    min={0}
                     type="number"
                     aria-describedby="inputGroupPrepend"
                     placeholder="Maximum number of students"
                     ref={maxStudRef}
                     isInvalid={isMStud}
-                    defaultValue={props.method === "PUT" ? props.sessionObj.max_students : ""}
+                    defaultValue={
+                      props.method === "PUT"
+                        ? props.sessionObj.max_students
+                        : ""
+                    }
                     required
                   />
                   <Form.Control.Feedback type="invalid">
@@ -266,7 +325,6 @@ export const SessionForm = (props) => {
           </Form>
         </div>
       </div>
-
     );
   }
   return content;

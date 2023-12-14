@@ -8,7 +8,6 @@ export const StudySessionContextProvider = ({ children }) => {
   // const [registrations, setRegistrations] = useState([]);
 
   const getSessions = async () => {
-    
     let url = `${process.env.NEXT_PUBLIC_BASENAME}api/sessions`;
     try {
       const response = await fetch(url, {
@@ -49,7 +48,7 @@ export const StudySessionContextProvider = ({ children }) => {
     } catch (error) {
       toast.error(error.message);
     }
-  }
+  };
 
   const sessionSubmission = async (formData, sendMethod, sessionid) => {
     try {

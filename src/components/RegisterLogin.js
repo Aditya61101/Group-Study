@@ -7,6 +7,7 @@ import { signIn } from "next-auth/react";
 import { toast } from "react-toastify";
 import LogInImage from "@/assets/log-in-image.png";
 import Image from "next/image";
+import { useTheme } from "next-themes";
 
 const RegisterLogin = (props) => {
   const [validated, setValidated] = useState(false);
@@ -17,7 +18,9 @@ const RegisterLogin = (props) => {
   const passwordRef = useRef();
   const emailRef = useRef();
   const router = useRouter();
-
+  const { theme, setTheme } = useTheme();
+  // console.log(theme);
+  let darkMode = theme === "dark";
   const handleLogin = async (email, password) => {
     setIsLoading(true);
     try {
@@ -63,8 +66,24 @@ const RegisterLogin = (props) => {
     content = <LoadingSpinner />;
   } else {
     content = (
-      <div className="d-flex justify-content-center">
-        <div className="mx-3 p-4 shadow my-3 border rounded-2 d-inline-flex justify-content-center">
+      <div
+        className={`d-flex justify-content-center ${
+          darkMode ? "text-white" : "text-dark"
+        }`}
+        style={{
+          height: "fit-content",
+        }}
+      >
+        <div
+          className="mx-3 p-4 my-3 border rounded-2 d-inline-flex justify-content-center"
+          style={{
+            boxShadow: `${
+              darkMode
+                ? "0 -2px 10px rgba(255, 255, 255, 1)"
+                : "rgba(0, 0, 0, 0.35) 0px 5px 15px"
+            }`,
+          }}
+        >
           <div className="mx-auto my-auto">
             <Image
               height={460}
@@ -72,7 +91,12 @@ const RegisterLogin = (props) => {
               src={LogInImage}
               alt="Log in Image"
               className="px-5 py-5 d-none d-lg-block"
-              style={{ objectFit: "contain", maxWidth: "36rem", marginRight: "auto", marginLeft: "auto" }}
+              style={{
+                objectFit: "contain",
+                maxWidth: "36rem",
+                marginRight: "auto",
+                marginLeft: "auto",
+              }}
             />
           </div>
           <Form
@@ -82,7 +106,7 @@ const RegisterLogin = (props) => {
             className="mx-3 my-auto"
             style={{ maxWidth: "35rem" }}
           >
-            <h3 className="fw-bolder fs-1 mb-4" >{props.title}</h3>
+            <h3 className="fw-bolder fs-1 mb-4">{props.title}</h3>
             <Row className="mb-3">
               <Form.Group as={Col} md="12" controlId="validationCustomEmail">
                 <Form.Label className="fw-semibold">Email</Form.Label>

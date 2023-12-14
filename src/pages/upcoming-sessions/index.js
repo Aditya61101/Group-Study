@@ -4,8 +4,12 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { UpcomingSessionItem } from "@/components/UpcomingSessionItem";
 import { SessionForm } from "@/components/SessionForm";
 import { StudySessionContext } from "@/context/StudySessionContextProvider";
+import { useTheme } from "next-themes";
 
 const UpcomingSessions = () => {
+  const { theme, setTheme } = useTheme();
+  let darkMode = theme === "dark";
+
   const sessionCtx = useContext(StudySessionContext);
   const [show, setShow] = useState(false);
   const [sesObj, setSesObj] = useState({});
@@ -70,7 +74,9 @@ const UpcomingSessions = () => {
     );
   } else {
     content = (
-      <Container>
+      <Container className=" " style={{
+        minHeight:"fit-content",
+      }}>
         <Row>
           {upSessions?.map((session) => {
             return (
@@ -99,8 +105,15 @@ const UpcomingSessions = () => {
   }
   return (
     <>
-      {modal}
-      {content}
+      <div
+        className={` bg-${darkMode ? "black" : "white"}`}
+        style={{
+          minHeight:"fit-content"
+        }}
+      >
+        {modal}
+        {content}
+      </div>
     </>
   );
 };
