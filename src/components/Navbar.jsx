@@ -55,8 +55,12 @@ const Navigation = () => {
               </>
             ) : (
               <>
-                <Link href="/signup">SignUp</Link>
-                <Link href="/login">Login</Link>
+                <Link className="nav-link" href="/signup">
+                  SignUp
+                </Link>
+                <Link className="nav-link" href="/login">
+                  Login
+                </Link>
               </>
             )}
           </Nav>
